@@ -3,17 +3,16 @@ package Model;
 public class Spaceship extends Ship {
 
     private static final int LIVES = 3;
-    private static final double INIT_DIRECTION = 0.0;
-
-    private static final double ROTATION = Math.PI/16;
+    private static final double INIT_DIRECTION = -Math.PI/2;
+    private static final double ROTATION = Math.PI/20;
 
     private int lives;
-    private double rotation;
 
-    public Spaceship(int posX, int posY) {
-        super(posX, posY);
+    public Spaceship() {
+        super(0,0);
         lives = LIVES;
         direction = INIT_DIRECTION;
+        velocity = new Vector(0,0);
     }
 
     @Override
@@ -21,13 +20,22 @@ public class Spaceship extends Ship {
         System.out.println("pew");
     }
 
-    public void rotate() {
-        this.direction += rotation;
-        System.out.println(this.direction);
+    public void rotateRight() {
+        this.direction += ROTATION;
     }
 
-    public void setRotation(double angle) {
-        rotation = angle;
+    public void rotateLeft() {
+        this.direction -= ROTATION;
+    }
+
+    public void thrust() {
+        Vector force = new Vector(direction);
+        velocity.add(force);
+    }
+
+    public void update() {
+        // friction
+        velocity.multiplyBy(0.998);
     }
 
     public int getLives() {
