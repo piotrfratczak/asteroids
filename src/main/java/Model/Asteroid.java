@@ -1,23 +1,18 @@
 package Model;
 
-import Controller.Game;
+import Controller.GameController;
+
+import java.awt.*;
 
 public class Asteroid extends FlyingObject {
 
-    private double rotation;
-
     public Asteroid() {
-        int w = Game.getDisplayWidth();
-        int h = Game.getDisplayHeight();
-        int x = (int) (Math.random() * w);
-        int y = (int) (Math.random() * h);
+        super(0,0);
+        int x = (int) (Math.random() * GameController.SPACE_WIDTH);
+        int y = (int) (Math.random() * GameController.SPACE_HEIGHT);
         this.position = new int[] {x, y};
 
-        this.rotation = Math.random() * 2*Math.PI;
-    }
-
-    public double getRotation() {
-        return this.rotation;
+        this.direction = Math.random() * 2*Math.PI;
     }
 
 }
