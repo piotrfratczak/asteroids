@@ -28,6 +28,7 @@ public class GameController {
     private static Spaceship spaceship;
 
     public GameController() {
+        System.out.println(this.getClass().getCanonicalName());
 
         display = new Display();
 //        level   = new Level();
