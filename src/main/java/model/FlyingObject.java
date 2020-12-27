@@ -1,7 +1,6 @@
-package Model;
+package model;
 
-import Controller.Game;
-import Controller.GameController;
+import controller.GameController;
 
 abstract class FlyingObject {
 

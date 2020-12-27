@@ -1,13 +1,9 @@
-package Controller;
+package controller;
 
-import Model.Asteroid;
-import Model.Spaceship;
-import View.Display;
+import model.Asteroid;
+import model.Spaceship;
+import view.Display;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 

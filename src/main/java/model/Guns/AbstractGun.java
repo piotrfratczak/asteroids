@@ -1,4 +1,4 @@
-package Model.Guns;
+package model.Guns;
 
 abstract public class AbstractGun {
 

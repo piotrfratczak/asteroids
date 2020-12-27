@@ -1,6 +1,6 @@
-package View;
+package view;
 
-import Controller.GameController;
+import controller.GameController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class Display extends JFrame implements ActionListener {
 
     private final ShipComponent shipComponent;
 
-    private final Timer timer = new Timer(5, this);
+    private final Timer timer = new Timer(3, this);
 
     Action upAction;
     Action leftAction;

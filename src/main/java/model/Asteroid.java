@@ -1,8 +1,6 @@
-package Model;
+package model;
 
-import Controller.GameController;
-
-import java.awt.*;
+import controller.GameController;
 
 public class Asteroid extends FlyingObject {
 

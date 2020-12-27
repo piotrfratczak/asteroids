@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 enum GameStatus {
     RUNNING, STOPPED
