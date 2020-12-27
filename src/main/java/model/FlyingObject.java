@@ -1,7 +1,5 @@
 package model;
 
-import controller.GameController;
-
 abstract class FlyingObject {
 
     Vector position;
@@ -22,10 +20,10 @@ abstract class FlyingObject {
     public double getX() {
         position.add(velocity);
 
-        if (position.getX() > GameController.RIGHT_BOUND) {
-            position.setX(GameController.LEFT_BOUND);
-        } else if (position.getX() < GameController.LEFT_BOUND) {
-            position.setX(GameController.RIGHT_BOUND);
+        if (position.getX() > GameModel.RIGHT_BOUND) {
+            position.setX(GameModel.LEFT_BOUND);
+        } else if (position.getX() < GameModel.LEFT_BOUND) {
+            position.setX(GameModel.RIGHT_BOUND);
         }
 
         return position.getX();
@@ -34,10 +32,10 @@ abstract class FlyingObject {
     public double getY() {
         position.add(velocity);
 
-        if (position.getY() > GameController.TOP_BOUND) {
-            position.setY(GameController.BOTTOM_BOUND);
-        } else if (position.getY() < GameController.BOTTOM_BOUND) {
-            position.setY(GameController.TOP_BOUND);
+        if (position.getY() > GameModel.TOP_BOUND) {
+            position.setY(GameModel.BOTTOM_BOUND);
+        } else if (position.getY() < GameModel.BOTTOM_BOUND) {
+            position.setY(GameModel.TOP_BOUND);
         }
 
         return position.getY();

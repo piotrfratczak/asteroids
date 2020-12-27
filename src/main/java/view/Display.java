@@ -24,7 +24,7 @@ public class Display extends JFrame implements ActionListener {
     public Display() {
         timer.start();
 
-        this.setTitle(GameController.TITLE);
+        this.setTitle(GameController.getTitle());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.getContentPane().setBackground(Color.BLACK);

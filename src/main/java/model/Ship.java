@@ -1,6 +1,6 @@
 package model;
 
-import model.Guns.AbstractGun;
+import model.guns.AbstractGun;
 
 abstract class Ship extends FlyingObject {
 

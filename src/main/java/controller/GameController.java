@@ -1,6 +1,7 @@
 package controller;
 
 import model.Asteroid;
+import model.GameModel;
 import model.Spaceship;
 import view.Display;
 
@@ -8,15 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameController {
-
-    public static final String TITLE = "Asteroids";
-    public static int SPACE_WIDTH = 1000;
-    public static int SPACE_HEIGHT = 1000;
-
-    public static int RIGHT_BOUND  = 500;
-    public static int TOP_BOUND    = 500;
-    public static int LEFT_BOUND   = -500;
-    public static int BOTTOM_BOUND = -500;
 
     private static Display display;
     private static Level level;
@@ -30,6 +22,10 @@ public class GameController {
 //        level   = new Level();
 
         spaceship = new Spaceship();
+    }
+
+    public static String getTitle() {
+        return GameModel.TITLE;
     }
 
     public static void rotateSpaceshipRight() {
