@@ -28,6 +28,14 @@ public class GameController {
         return GameModel.TITLE;
     }
 
+    public static int getGameWidth() {
+        return GameModel.SPACE_WIDTH;
+    }
+
+    public static int getGameHeight() {
+        return GameModel.SPACE_HEIGHT;
+    }
+
     public static void rotateSpaceshipRight() {
         spaceship.rotateRight();
     }
