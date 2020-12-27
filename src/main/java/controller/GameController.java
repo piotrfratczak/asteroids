@@ -61,7 +61,15 @@ public class GameController {
     }
 
     public static void updateSpaceship() {
-        spaceship.update();
+        spaceship.updateVelocity();
+    }
+
+    public static void shootSpaceship() {
+        spaceship.shoot();
+    }
+
+    public static void teleportSpaceship() {
+        spaceship.teleport();
     }
 
     private static class Level {

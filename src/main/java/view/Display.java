@@ -1,12 +1,14 @@
 package view;
 
+import controller.Game;
 import controller.GameController;
-import model.GameModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
@@ -19,10 +21,6 @@ public class Display extends JFrame implements ActionListener {
     private final ShipComponent shipComponent;
 
     private final Timer timer = new Timer(3, this);
-
-    Action upAction;
-    Action leftAction;
-    Action rightAction;
 
     public Display() {
         timer.start();
@@ -42,15 +40,23 @@ public class Display extends JFrame implements ActionListener {
     }
 
     private void bindShipActions() {
-        upAction = new UpAction();
-        leftAction = new LeftAction();
-        rightAction = new RightAction();
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
+        Action upAction = new UpAction();
+        Action leftAction = new LeftAction();
+        Action rightAction = new RightAction();
+        Action shootAction = new ShootAction();
+        Action teleportAction = new TeleportAction();
+
+        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction");
+        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftAction");
+        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightAction");
+        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
+        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
+
         shipComponent.getActionMap().put("upAction", upAction);
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
         shipComponent.getActionMap().put("leftAction", leftAction);
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
         shipComponent.getActionMap().put("rightAction", rightAction);
+        shipComponent.getActionMap().put("shootAction", shootAction);
+        shipComponent.getActionMap().put("teleportAction", teleportAction);
     }
 
     @Override
@@ -60,27 +66,38 @@ public class Display extends JFrame implements ActionListener {
         }
     }
 
-    public class UpAction extends AbstractAction {
-
+    public static class UpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.boostSpaceship();
         }
     }
 
-    public class LeftAction extends AbstractAction {
-
+    public static class LeftAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.rotateSpaceshipLeft();
         }
     }
 
-    public class RightAction extends AbstractAction {
-
+    public static class RightAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.rotateSpaceshipRight();
+        }
+    }
+
+    public static class ShootAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.shootSpaceship();
+        }
+    }
+
+    public static class TeleportAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.teleportSpaceship();
         }
     }
 
@@ -115,7 +132,7 @@ public class Display extends JFrame implements ActionListener {
             // Draw the actual ship
             paintOffset(g2, x, y);
             // Smooth edge transitions
-            paintOffset(g2, x + Display.WIDTH, y);   // Draw the ship on the right when over the left edge
+            paintOffset(g2, x + Display.WIDTH, y);   // Draw the ship on the right side when it's over the left edge
             paintOffset(g2, x - Display.WIDTH, y);   // And so on...
             paintOffset(g2, x, y + Display.HEIGHT);
             paintOffset(g2, x, y - Display.HEIGHT);

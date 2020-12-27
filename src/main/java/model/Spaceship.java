@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class Spaceship extends Ship {
 
     private static final int LIVES = 3;
@@ -33,9 +35,15 @@ public class Spaceship extends Ship {
         velocity.add(force);
     }
 
-    public void update() {
-        // friction
+    public void updateVelocity() {
         velocity.multiplyBy(0.998);
+    }
+
+    public void teleport() {
+        Random rand = new Random();
+        int newX = rand.nextInt(GameModel.SPACE_WIDTH + 1) + GameModel.LEFT_BOUND;
+        int newY = rand.nextInt(GameModel.SPACE_HEIGHT + 1) + GameModel.BOTTOM_BOUND;
+        this.position = new Vector(newX, newY);
     }
 
     public int getLives() {
