@@ -1,16 +1,20 @@
 package model;
 
-abstract class FlyingObject {
+abstract public class FlyingObject {
 
-    Vector position;
-    double direction;
-    Vector velocity;
+    protected Vector position;
+    protected double direction;
+    protected Vector velocity;
 
     public FlyingObject() {
     }
 
     public FlyingObject(int posX, int posY) {
         position = new Vector(posX, posY);
+    }
+
+    public FlyingObject(Vector position) {
+        this.position = position;
     }
 
     public double getDirection() {

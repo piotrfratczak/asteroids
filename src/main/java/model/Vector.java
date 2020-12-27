@@ -15,6 +15,11 @@ public class Vector {
         this.y = Math.sin(angle);
     }
 
+    public Vector(Vector that) {
+        this.x = that.getX();
+        this.y = that.getY();
+    }
+
     public double getX() {
         return x;
     }

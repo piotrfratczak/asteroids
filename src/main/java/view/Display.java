@@ -1,6 +1,5 @@
 package view;
 
-import controller.Game;
 import controller.GameController;
 
 import javax.swing.*;
@@ -12,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
+import java.util.List;
+
 
 public class Display extends JFrame implements ActionListener {
 
@@ -33,7 +34,7 @@ public class Display extends JFrame implements ActionListener {
 
         shipComponent = new ShipComponent();
         bindShipActions();
-        this.add(shipComponent);
+        this.add(shipComponent, 0);
 
         this.pack();
         this.setVisible(true);
@@ -87,7 +88,7 @@ public class Display extends JFrame implements ActionListener {
         }
     }
 
-    public static class ShootAction extends AbstractAction {
+    public class ShootAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.shootSpaceship();
@@ -137,6 +138,27 @@ public class Display extends JFrame implements ActionListener {
             paintOffset(g2, x, y + Display.HEIGHT);
             paintOffset(g2, x, y - Display.HEIGHT);
 
+//            AffineTransform transform = new AffineTransform();
+//            transform.translate(0, -30);
+//            transform.rotate(GameController.getSpaceshipRotation() + Math.PI/2);
+//
+//            g2.transform(transform);
+
+            GameController.updateBullets();
+            List<double[]> coords = GameController.getBulletsCoords();
+            int R = 4;
+
+            for (double[] pair : coords) {
+                 x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
+                 y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
+                g2.fillOval((int)x + Display.WIDTH/2 - R/2, (int)y + Display.HEIGHT/2 - R/2, R, R);
+            }
+//            try{
+//                g2.transform(transform.createInverse());
+//            }catch(NoninvertibleTransformException e){
+//                e.printStackTrace();
+//            }
+
         }
 
         private void paintOffset(Graphics2D g2, double x, double y) {
@@ -155,5 +177,7 @@ public class Display extends JFrame implements ActionListener {
         }
 
     }
+
+
 
 }

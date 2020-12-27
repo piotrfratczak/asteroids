@@ -72,6 +72,14 @@ public class GameController {
         spaceship.teleport();
     }
 
+    public static void updateBullets() {
+        spaceship.updateBullets();
+    }
+
+    public static List<double[]> getBulletsCoords() {
+        return spaceship.getBulletsCoords();
+    }
+
     private static class Level {
 
         static int which;
