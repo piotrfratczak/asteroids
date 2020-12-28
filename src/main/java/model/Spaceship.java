@@ -50,10 +50,8 @@ public class Spaceship extends Ship {
     }
 
     public void updateBullets() {
-        for (Bullet bullet : bullets) {
-            bullet.update();
-            if (!bullet.isActive()) bullets.remove(bullet);
-        }
+        bullets.forEach(Bullet::update);
+        bullets.removeIf(Bullet::isBurnedOut);
     }
 
     public List<double[]> getBulletsCoords() {

@@ -9,3 +9,10 @@ public class Game {
     }
 
 }
+
+// TODO: add collision detection
+// TODO: add asteroids
+// TODO: add UFOs
+// TODO: add levels
+// TODO: add guns
+// TODO: add menu

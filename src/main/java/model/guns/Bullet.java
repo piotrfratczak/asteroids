@@ -5,7 +5,7 @@ import model.Vector;
 
 public class Bullet extends FlyingObject {
 
-    private final int TTL = 300;
+    private final int TTL = 200;
     private int timeToLive;
 
     public Bullet(Vector position, double direction) {
@@ -21,8 +21,8 @@ public class Bullet extends FlyingObject {
         --timeToLive;
     }
 
-    public boolean isActive() {
-        return timeToLive != 0;
+    public boolean isBurnedOut() {
+        return timeToLive <= 0;
     }
 
 }

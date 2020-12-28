@@ -88,7 +88,7 @@ public class Display extends JFrame implements ActionListener {
         }
     }
 
-    public class ShootAction extends AbstractAction {
+    public static class ShootAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.shootSpaceship();
@@ -129,6 +129,9 @@ public class Display extends JFrame implements ActionListener {
 
             g2.setStroke(new BasicStroke(STROKE_WIDTH));
             g2.setPaint(Color.white);
+
+            // TODO: split this into 2 classes
+            //https://stackoverflow.com/questions/33488331/how-to-add-multiple-components-to-a-jframe/33488407#33488407
 
             // Draw the actual ship
             paintOffset(g2, x, y);
