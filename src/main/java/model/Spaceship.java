@@ -13,7 +13,7 @@ public class Spaceship extends Ship {
     private static final double ROTATION = Math.PI/20;
 
     private int lives;
-    private List<Bullet> bullets;
+    private final List<Bullet> bullets;
 
     public Spaceship() {
         super(0,0);

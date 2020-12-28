@@ -1,26 +1,26 @@
 package controller;
 
 import model.Asteroid;
+import model.AsteroidSize;
 import model.GameModel;
 import model.Spaceship;
 import view.Display;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameController {
 
     private static Display display;
     private static Level level;
-
     private static Spaceship spaceship;
 
     public GameController() {
         System.out.println(this.getClass().getCanonicalName());
 
-        display = new Display();
-//        level   = new Level();
-
+        display   = new Display();
+        level     = new Level();
         spaceship = new Spaceship();
     }
 
@@ -80,20 +80,33 @@ public class GameController {
         return spaceship.getBulletsCoords();
     }
 
+    public static List<double[]> getAsteroidsCoords() {
+        List<double[]> coords = new LinkedList<>();
+        for (Asteroid asteroid : Level.asteroids) {
+            double[] pair = new double[2];
+            pair[0] = asteroid.getX();
+            pair[1] = asteroid.getY();
+            coords.add(pair);
+        }
+        return coords;
+    }
+
     private static class Level {
 
         static int which;
-        private List<Asteroid> asteroids;
+        private static int asteroidCount;
+        private static List<Asteroid> asteroids;
 
         private Level() {
             ++which;
             asteroids = new ArrayList<>();
-            generateAsteroids(5);
+            asteroidCount = 5;
+            generateAsteroids();
         }
 
-        private void generateAsteroids(int numberOfAsteroids) {
-            for (int i=0; i<numberOfAsteroids; ++i) {
-                asteroids.add(new Asteroid());
+        private void generateAsteroids() {
+            for (int i=0; i<asteroidCount; ++i) {
+                asteroids.add(new Asteroid(AsteroidSize.LARGE));
             }
         }
 

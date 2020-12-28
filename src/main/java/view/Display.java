@@ -108,15 +108,30 @@ public class Display extends JFrame implements ActionListener {
         private final int[] Y_COORDS = {-30, 30, 10, 30};
         private final float STROKE_WIDTH = 1.5f;
 
-        private final GeneralPath shape;
+        private final GeneralPath shipShape;
+        private final GeneralPath asteroidShape;
 
         ShipComponent() {
-            shape = new GeneralPath(BasicStroke.JOIN_ROUND, X_COORDS.length);
-            shape.moveTo(X_COORDS[0], Y_COORDS[0]);
+            shipShape = new GeneralPath(BasicStroke.JOIN_ROUND, X_COORDS.length);
+            shipShape.moveTo(X_COORDS[0], Y_COORDS[0]);
             for (int i=0; i<4; ++i) {
-                shape.lineTo(X_COORDS[i], Y_COORDS[i]);
+                shipShape.lineTo(X_COORDS[i], Y_COORDS[i]);
             }
-            shape.closePath();
+            shipShape.closePath();
+
+            // asteroid
+            int edges = 10;
+            int R = 50;
+            asteroidShape = new GeneralPath(BasicStroke.JOIN_ROUND, edges);
+            asteroidShape.moveTo(R,0);
+            for (int i=1; i<edges; ++i) {
+                double d = Math.random() * R/2;
+                double x = (R-d) * Math.cos(i * 2*Math.PI/edges);
+                double y = (R-d) * Math.sin(i * 2*Math.PI/edges);
+                asteroidShape.lineTo(x,y);
+            }
+            asteroidShape.closePath();
+
         }
 
         @Override
@@ -133,41 +148,42 @@ public class Display extends JFrame implements ActionListener {
             // TODO: split this into 2 classes
             //https://stackoverflow.com/questions/33488331/how-to-add-multiple-components-to-a-jframe/33488407#33488407
 
+            double rot = GameController.getSpaceshipRotation();
             // Draw the actual ship
-            paintOffset(g2, x, y);
+            paintOffset(g2, shipShape, rot, x, y);
             // Smooth edge transitions
-            paintOffset(g2, x + Display.WIDTH, y);   // Draw the ship on the right side when it's over the left edge
-            paintOffset(g2, x - Display.WIDTH, y);   // And so on...
-            paintOffset(g2, x, y + Display.HEIGHT);
-            paintOffset(g2, x, y - Display.HEIGHT);
+            paintOffset(g2, shipShape, rot, x + Display.WIDTH, y);   // Draw the ship on the right side when it's over the left edge
+            paintOffset(g2, shipShape, rot, x - Display.WIDTH, y);   // And so on...
+            paintOffset(g2, shipShape, rot, x, y + Display.HEIGHT);
+            paintOffset(g2, shipShape, rot, x, y - Display.HEIGHT);
 
-//            AffineTransform transform = new AffineTransform();
-//            transform.translate(0, -30);
-//            transform.rotate(GameController.getSpaceshipRotation() + Math.PI/2);
-//
-//            g2.transform(transform);
+            // bullets
 
             GameController.updateBullets();
-            List<double[]> coords = GameController.getBulletsCoords();
+            List<double[]> bulletsCoords = GameController.getBulletsCoords();
             int R = 4;
 
-            for (double[] pair : coords) {
+            for (double[] pair : bulletsCoords) {
                  x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
                  y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
                 g2.fillOval((int)x + Display.WIDTH/2 - R/2, (int)y + Display.HEIGHT/2 - R/2, R, R);
             }
-//            try{
-//                g2.transform(transform.createInverse());
-//            }catch(NoninvertibleTransformException e){
-//                e.printStackTrace();
-//            }
+
+            //asteroids
+
+            List<double[]> asteroidsCoords = GameController.getAsteroidsCoords();
+            for (double[] pair : asteroidsCoords) {
+                x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
+                y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
+                paintOffset(g2, asteroidShape, 0, x, y);
+            }
 
         }
 
-        private void paintOffset(Graphics2D g2, double x, double y) {
+        private void paintOffset(Graphics2D g2, GeneralPath shape, double rotation, double x, double y) {
             AffineTransform transform = new AffineTransform();
             transform.translate(Display.WIDTH/2.0 + x,Display.HEIGHT/2.0 + y);
-            transform.rotate(GameController.getSpaceshipRotation() + Math.PI/2);
+            transform.rotate(rotation + Math.PI/2);
 
             g2.transform(transform);
             g2.draw(shape);
