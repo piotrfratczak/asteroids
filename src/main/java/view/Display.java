@@ -1,5 +1,6 @@
 package view;
 
+import controller.Game;
 import controller.GameController;
 
 import javax.swing.*;
@@ -109,7 +110,6 @@ public class Display extends JFrame implements ActionListener {
         private final float STROKE_WIDTH = 1.5f;
 
         private final GeneralPath shipShape;
-        private final GeneralPath asteroidShape;
 
         ShipComponent() {
             shipShape = new GeneralPath(BasicStroke.JOIN_ROUND, X_COORDS.length);
@@ -118,19 +118,6 @@ public class Display extends JFrame implements ActionListener {
                 shipShape.lineTo(X_COORDS[i], Y_COORDS[i]);
             }
             shipShape.closePath();
-
-            // asteroid
-            int edges = 10;
-            int R = 50;
-            asteroidShape = new GeneralPath(BasicStroke.JOIN_ROUND, edges);
-            asteroidShape.moveTo(R,0);
-            for (int i=1; i<edges; ++i) {
-                double d = Math.random() * R/2;
-                double x = (R-d) * Math.cos(i * 2*Math.PI/edges);
-                double y = (R-d) * Math.sin(i * 2*Math.PI/edges);
-                asteroidShape.lineTo(x,y);
-            }
-            asteroidShape.closePath();
 
         }
 
@@ -159,22 +146,38 @@ public class Display extends JFrame implements ActionListener {
 
             // bullets
 
-            GameController.updateBullets();
+            GameController.update();
             List<double[]> bulletsCoords = GameController.getBulletsCoords();
-            int R = 4;
+            int r = 4;
 
             for (double[] pair : bulletsCoords) {
                  x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
                  y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
-                g2.fillOval((int)x + Display.WIDTH/2 - R/2, (int)y + Display.HEIGHT/2 - R/2, R, R);
+                g2.fillOval((int)x + Display.WIDTH/2 - r/2, (int)y + Display.HEIGHT/2 - r/2, r, r);
             }
 
             //asteroids
 
+            //TODO: do not redraw path every time
+            int edges = 10;
+
             List<double[]> asteroidsCoords = GameController.getAsteroidsCoords();
+            List<List<double[]>> asteroidShapes = GameController.getAsteroidShapes();
+            int index = 0;
             for (double[] pair : asteroidsCoords) {
                 x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
                 y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
+
+                List<double[]> vertices = asteroidShapes.get(index);
+                ++index;
+
+                GeneralPath asteroidShape = new GeneralPath(BasicStroke.JOIN_ROUND, edges);
+                asteroidShape.moveTo(vertices.get(0)[0],vertices.get(0)[1]);
+                for (double[] vertex : vertices) {
+                    asteroidShape.lineTo(vertex[0], vertex[1]);
+                }
+                asteroidShape.closePath();
+
                 paintOffset(g2, asteroidShape, 0, x, y);
             }
 

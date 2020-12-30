@@ -46,4 +46,8 @@ public class Vector {
         this.y *= d;
     }
 
+    public double distance(Vector that) {
+        return Math.sqrt((x - that.x) * (x - that.x) + (y - that.y) * (y - that.y));
+    }
+
 }

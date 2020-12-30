@@ -46,11 +46,25 @@ public class Spaceship extends Ship {
     }
 
     public void updateVelocity() {
-        velocity.multiplyBy(0.998);
+        velocity.multiplyBy(0.995);
     }
 
-    public void updateBullets() {
-        bullets.forEach(Bullet::update);
+    public void update(List<Asteroid> asteroids) {//TODO: rename
+        for (Bullet bullet : bullets) {
+            List<Asteroid> hitAsteroids = new LinkedList<>();
+            for (Asteroid asteroid : asteroids) {
+                if (asteroid.isHit(bullet.position)) {
+                    bullet.destroy();
+                    hitAsteroids.add(asteroid);
+                    break;
+                }
+            }
+            for (Asteroid asteroid : hitAsteroids) {
+                asteroids.addAll(asteroid.hit());
+            }
+            asteroids.removeAll(hitAsteroids);
+            bullet.update();
+        }
         bullets.removeIf(Bullet::isBurnedOut);
     }
 

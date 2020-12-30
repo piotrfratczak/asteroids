@@ -21,6 +21,10 @@ public class Bullet extends FlyingObject {
         --timeToLive;
     }
 
+    public void destroy() {
+        timeToLive = 0;
+    }
+
     public boolean isBurnedOut() {
         return timeToLive <= 0;
     }

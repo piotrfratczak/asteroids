@@ -72,8 +72,8 @@ public class GameController {
         spaceship.teleport();
     }
 
-    public static void updateBullets() {
-        spaceship.updateBullets();
+    public static void update() {//TODO: rename
+        Level.update(spaceship);
     }
 
     public static List<double[]> getBulletsCoords() {
@@ -91,6 +91,15 @@ public class GameController {
         return coords;
     }
 
+    public static List<List<double[]>> getAsteroidShapes() {// TODO: make it smarter get asteroid by id or sth
+        List<List<double[]>> shapes = new LinkedList<>();
+        for (Asteroid asteroid : Level.asteroids) {
+            List<double[]> vertices = asteroid.getVertices();
+            shapes.add(vertices);
+        }
+        return shapes;
+    }
+
     private static class Level {
 
         static int which;
@@ -104,9 +113,18 @@ public class GameController {
             generateAsteroids();
         }
 
-        private void generateAsteroids() {
+        private static void generateAsteroids() {
             for (int i=0; i<asteroidCount; ++i) {
                 asteroids.add(new Asteroid(AsteroidSize.LARGE));
+            }
+        }
+
+        public static void update(Spaceship spaceship) {
+            spaceship.update(asteroids);
+            if (asteroids.size() == 0) {
+                ++which;
+                ++asteroidCount;
+                generateAsteroids();
             }
         }
 
