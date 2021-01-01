@@ -6,11 +6,14 @@ import view.drawable.BulletShape;
 import view.drawable.SpaceshipShape;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.*;
+import java.util.List;
 
 public class Display extends JFrame implements ActionListener {
 
@@ -106,13 +109,12 @@ public class Display extends JFrame implements ActionListener {
 
         private final SpaceshipShape spaceshipShape;
         private final BulletShape bulletShape;
-        private final AsteroidShape asteroidShape;
-
+        private final Map<Integer, AsteroidShape> asteroidShapes;
 
         SpaceComponent() {
             spaceshipShape = new SpaceshipShape();
             bulletShape = new BulletShape();
-            asteroidShape = new AsteroidShape();
+            asteroidShapes = new HashMap<>();
         }
 
         @Override
@@ -123,8 +125,29 @@ public class Display extends JFrame implements ActionListener {
             g2.setPaint(Color.white);
 
             spaceshipShape.draw(g2);
+            GameController.collide();
             bulletShape.draw(g2);
-            asteroidShape.draw(g2);
+            drawAsteroids(g2);
+        }
+
+        private void drawAsteroids(Graphics2D g2) {
+            Set<Integer> asteroidIds = GameController.getAsteroidIds();
+
+            List<Integer> obsoleteIds = new LinkedList<>(asteroidShapes.keySet());
+            obsoleteIds.removeAll(asteroidIds);
+            for (int id : obsoleteIds) {
+                asteroidShapes.remove(id);
+            }
+
+            List<Integer> newIds = new LinkedList<>(asteroidIds);
+            newIds.removeAll(asteroidShapes.keySet());
+            for (int id : newIds) {
+                asteroidShapes.put(id, new AsteroidShape(id));
+            }
+
+            for (AsteroidShape asteroidShape : asteroidShapes.values()) {
+                asteroidShape.draw(g2);
+            }
         }
     }
 

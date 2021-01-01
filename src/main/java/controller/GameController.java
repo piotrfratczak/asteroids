@@ -6,9 +6,7 @@ import model.GameModel;
 import model.Spaceship;
 import view.Display;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GameController {
 
@@ -71,63 +69,60 @@ public class GameController {
         spaceship.teleport();
     }
 
-    //TODO: split into bullet and asteroid
-    public static void update() {//TODO: rename
-        level.update(spaceship);
+    public static void collide() {//TODO: rename
+        level.collide(spaceship);
     }
 
     public static List<double[]> getBulletsCoords() {
         return spaceship.getBulletsCoords();
     }
 
-    public static List<double[]> getAsteroidsCoords() {
-        List<double[]> coords = new LinkedList<>();
-        for (Asteroid asteroid : level.asteroids) {
-            double[] pair = new double[2];
-            pair[0] = asteroid.getX();
-            pair[1] = asteroid.getY();
-            coords.add(pair);
-        }
+    public static double[] getAsteroidCoords(int id) {
+        Asteroid asteroid = level.asteroids.get(id);
+        double[] coords = new double[2];
+        coords[0] = asteroid.getX();
+        coords[1] = asteroid.getY();
+
         return coords;
     }
 
-    public static List<List<double[]>> getAsteroidShapes() {// TODO: make it smarter get asteroid by id or sth
-        List<List<double[]>> shapes = new LinkedList<>();
-        for (Asteroid asteroid : level.asteroids) {
-            List<double[]> vertices = asteroid.getVertices();
-            shapes.add(vertices);
-        }
-        return shapes;
+    public static List<double[]> getAsteroidShape(int id) {// TODO: make it smarter get asteroid by id or sth
+        return level.asteroids.get(id).getVertices();
     }
 
-    private class Level {
+    public static Set<Integer> getAsteroidIds() {
+        return level.asteroids.keySet();
+    }
+
+    private static class Level {
 
         int which;
         private int asteroidCount;
-        private List<Asteroid> asteroids;
+        private Map<Integer, Asteroid> asteroids;
 
         private Level() {
             ++which;
-            asteroids = new ArrayList<>();
+            asteroids = new HashMap<>();
             asteroidCount = 5;
             generateAsteroids();
         }
 
         private void generateAsteroids() {
             for (int i=0; i<asteroidCount; ++i) {
-                asteroids.add(new Asteroid(AsteroidSize.LARGE));
+                Asteroid asteroid = new Asteroid(AsteroidSize.LARGE);
+                Integer id = asteroid.getId();
+                asteroids.put(id, asteroid);
             }
         }
 
-        public void update(Spaceship spaceship) {
-            spaceship.update(asteroids);
+        public void collide(Spaceship spaceship) {
+            spaceship.collide(asteroids);
             if (asteroids.size() == 0) {
                 ++which;
                 ++asteroidCount;
                 generateAsteroids();
             }
         }
-
     }
 
 }

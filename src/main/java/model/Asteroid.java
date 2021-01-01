@@ -5,11 +5,14 @@ import java.util.List;
 
 public class Asteroid extends FlyingObject {
 
+    private static int count = 0;
+    private final int id;
     private final AsteroidSize size;
     private List<double[]> vertices;
 
     public Asteroid(AsteroidSize size) {
         this.size = size;
+        this.id = ++count;
 
         double x = Math.random() * GameModel.SPACE_WIDTH;
         double y = Math.random() * GameModel.SPACE_HEIGHT;
@@ -19,8 +22,9 @@ public class Asteroid extends FlyingObject {
         setVelocity();
         generateShape();
     }
-
+    //TODO: the constructors are too similar
     private Asteroid(Asteroid that) {
+        this.id = ++count;
         if (that.size == AsteroidSize.LARGE) {
             this.size = AsteroidSize.MEDIUM;
         } else {
@@ -83,6 +87,10 @@ public class Asteroid extends FlyingObject {
 
     public List<double[]> getVertices() {
         return vertices;
+    }
+
+    public int getId() {
+        return id;
     }
 }
 // TODO: make destroyable interface

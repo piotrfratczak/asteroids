@@ -4,6 +4,7 @@ import model.guns.Bullet;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Spaceship extends Ship {
@@ -49,20 +50,18 @@ public class Spaceship extends Ship {
         velocity.multiplyBy(0.995);
     }
 
-    public void update(List<Asteroid> asteroids) {//TODO: rename
+    public void collide(Map<Integer,Asteroid> asteroids) {
         for (Bullet bullet : bullets) {
-            List<Asteroid> hitAsteroids = new LinkedList<>();
-            for (Asteroid asteroid : asteroids) {
+            for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
+                Asteroid asteroid = entry.getValue();
                 if (asteroid.isHit(bullet.position)) {
                     bullet.destroy();
-                    hitAsteroids.add(asteroid);
+                    List<Asteroid> children = asteroid.hit();
+                    for (Asteroid child : children) asteroids.put(child.getId(), child);
+                    asteroids.remove(asteroid.getId());
                     break;
                 }
             }
-            for (Asteroid asteroid : hitAsteroids) {
-                asteroids.addAll(asteroid.hit());
-            }
-            asteroids.removeAll(hitAsteroids);
             bullet.update();
         }
         bullets.removeIf(Bullet::isBurnedOut);

@@ -10,7 +10,6 @@ public class BulletShape implements Drawable {
 
     @Override
     public void draw(Graphics2D g2) {
-        GameController.update();
         List<double[]> bulletsCoords = GameController.getBulletsCoords();
         int r = 4;
 
