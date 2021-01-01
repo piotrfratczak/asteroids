@@ -1,7 +1,9 @@
 package view;
 
-import controller.Game;
 import controller.GameController;
+import view.drawable.AsteroidShape;
+import view.drawable.BulletShape;
+import view.drawable.SpaceshipShape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,18 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
-import java.util.List;
-
 
 public class Display extends JFrame implements ActionListener {
 
-    private static final int WIDTH  = 1000;
-    private static final int HEIGHT = 1000;
+    public static final int WIDTH  = 1000;
+    public static final int HEIGHT = 1000;
 
-    private final ShipComponent shipComponent;
+    private final SpaceComponent spaceComponent;
 
     private final Timer timer = new Timer(3, this);
 
@@ -33,9 +30,9 @@ public class Display extends JFrame implements ActionListener {
         this.getContentPane().setBackground(Color.BLACK);
         this.setResizable(false);
 
-        shipComponent = new ShipComponent();
+        spaceComponent = new SpaceComponent();
         bindShipActions();
-        this.add(shipComponent, 0);
+        this.add(spaceComponent);
 
         this.pack();
         this.setVisible(true);
@@ -48,17 +45,17 @@ public class Display extends JFrame implements ActionListener {
         Action shootAction = new ShootAction();
         Action teleportAction = new TeleportAction();
 
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction");
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftAction");
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightAction");
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
-        shipComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
 
-        shipComponent.getActionMap().put("upAction", upAction);
-        shipComponent.getActionMap().put("leftAction", leftAction);
-        shipComponent.getActionMap().put("rightAction", rightAction);
-        shipComponent.getActionMap().put("shootAction", shootAction);
-        shipComponent.getActionMap().put("teleportAction", teleportAction);
+        spaceComponent.getActionMap().put("upAction", upAction);
+        spaceComponent.getActionMap().put("leftAction", leftAction);
+        spaceComponent.getActionMap().put("rightAction", rightAction);
+        spaceComponent.getActionMap().put("shootAction", shootAction);
+        spaceComponent.getActionMap().put("teleportAction", teleportAction);
     }
 
     @Override
@@ -103,103 +100,32 @@ public class Display extends JFrame implements ActionListener {
         }
     }
 
-    private static class ShipComponent extends JComponent {
+    private static class SpaceComponent extends JComponent {
 
-        private final int[] X_COORDS = {0, 25, 0, -25};
-        private final int[] Y_COORDS = {-30, 30, 10, 30};
         private final float STROKE_WIDTH = 1.5f;
 
-        private final GeneralPath shipShape;
+        private final SpaceshipShape spaceshipShape;
+        private final BulletShape bulletShape;
+        private final AsteroidShape asteroidShape;
 
-        ShipComponent() {
-            shipShape = new GeneralPath(BasicStroke.JOIN_ROUND, X_COORDS.length);
-            shipShape.moveTo(X_COORDS[0], Y_COORDS[0]);
-            for (int i=0; i<4; ++i) {
-                shipShape.lineTo(X_COORDS[i], Y_COORDS[i]);
-            }
-            shipShape.closePath();
 
+        SpaceComponent() {
+            spaceshipShape = new SpaceshipShape();
+            bulletShape = new BulletShape();
+            asteroidShape = new AsteroidShape();
         }
 
         @Override
         public void paint(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
 
-            GameController.updateSpaceship();
-            double x = Display.WIDTH / (double)GameController.getGameWidth() * GameController.getSpaceshipX();
-            double y = Display.HEIGHT / (double)GameController.getGameHeight() * GameController.getSpaceshipY();
-
             g2.setStroke(new BasicStroke(STROKE_WIDTH));
             g2.setPaint(Color.white);
 
-            // TODO: split this into 2 classes
-            //https://stackoverflow.com/questions/33488331/how-to-add-multiple-components-to-a-jframe/33488407#33488407
-
-            double rot = GameController.getSpaceshipRotation();
-            // Draw the actual ship
-            paintOffset(g2, shipShape, rot, x, y);
-            // Smooth edge transitions
-            paintOffset(g2, shipShape, rot, x + Display.WIDTH, y);   // Draw the ship on the right side when it's over the left edge
-            paintOffset(g2, shipShape, rot, x - Display.WIDTH, y);   // And so on...
-            paintOffset(g2, shipShape, rot, x, y + Display.HEIGHT);
-            paintOffset(g2, shipShape, rot, x, y - Display.HEIGHT);
-
-            // bullets
-
-            GameController.update();
-            List<double[]> bulletsCoords = GameController.getBulletsCoords();
-            int r = 4;
-
-            for (double[] pair : bulletsCoords) {
-                 x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
-                 y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
-                g2.fillOval((int)x + Display.WIDTH/2 - r/2, (int)y + Display.HEIGHT/2 - r/2, r, r);
-            }
-
-            //asteroids
-
-            //TODO: do not redraw path every time
-            int edges = 10;
-
-            List<double[]> asteroidsCoords = GameController.getAsteroidsCoords();
-            List<List<double[]>> asteroidShapes = GameController.getAsteroidShapes();
-            int index = 0;
-            for (double[] pair : asteroidsCoords) {
-                x = Display.WIDTH / (double)GameController.getGameWidth() * pair[0];
-                y = Display.HEIGHT / (double)GameController.getGameHeight() * pair[1];
-
-                List<double[]> vertices = asteroidShapes.get(index);
-                ++index;
-
-                GeneralPath asteroidShape = new GeneralPath(BasicStroke.JOIN_ROUND, edges);
-                asteroidShape.moveTo(vertices.get(0)[0],vertices.get(0)[1]);
-                for (double[] vertex : vertices) {
-                    asteroidShape.lineTo(vertex[0], vertex[1]);
-                }
-                asteroidShape.closePath();
-
-                paintOffset(g2, asteroidShape, 0, x, y);
-            }
-
+            spaceshipShape.draw(g2);
+            bulletShape.draw(g2);
+            asteroidShape.draw(g2);
         }
-
-        private void paintOffset(Graphics2D g2, GeneralPath shape, double rotation, double x, double y) {
-            AffineTransform transform = new AffineTransform();
-            transform.translate(Display.WIDTH/2.0 + x,Display.HEIGHT/2.0 + y);
-            transform.rotate(rotation + Math.PI/2);
-
-            g2.transform(transform);
-            g2.draw(shape);
-
-            try{
-                g2.transform(transform.createInverse());
-            }catch(NoninvertibleTransformException e){
-                e.printStackTrace();
-            }
-        }
-
     }
-
-
 
 }

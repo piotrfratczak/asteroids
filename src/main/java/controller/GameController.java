@@ -18,7 +18,6 @@ public class GameController {
 
     public GameController() {
         System.out.println(this.getClass().getCanonicalName());
-
         display   = new Display();
         level     = new Level();
         spaceship = new Spaceship();
@@ -72,8 +71,9 @@ public class GameController {
         spaceship.teleport();
     }
 
+    //TODO: split into bullet and asteroid
     public static void update() {//TODO: rename
-        Level.update(spaceship);
+        level.update(spaceship);
     }
 
     public static List<double[]> getBulletsCoords() {
@@ -82,7 +82,7 @@ public class GameController {
 
     public static List<double[]> getAsteroidsCoords() {
         List<double[]> coords = new LinkedList<>();
-        for (Asteroid asteroid : Level.asteroids) {
+        for (Asteroid asteroid : level.asteroids) {
             double[] pair = new double[2];
             pair[0] = asteroid.getX();
             pair[1] = asteroid.getY();
@@ -93,18 +93,18 @@ public class GameController {
 
     public static List<List<double[]>> getAsteroidShapes() {// TODO: make it smarter get asteroid by id or sth
         List<List<double[]>> shapes = new LinkedList<>();
-        for (Asteroid asteroid : Level.asteroids) {
+        for (Asteroid asteroid : level.asteroids) {
             List<double[]> vertices = asteroid.getVertices();
             shapes.add(vertices);
         }
         return shapes;
     }
 
-    private static class Level {
+    private class Level {
 
-        static int which;
-        private static int asteroidCount;
-        private static List<Asteroid> asteroids;
+        int which;
+        private int asteroidCount;
+        private List<Asteroid> asteroids;
 
         private Level() {
             ++which;
@@ -113,13 +113,13 @@ public class GameController {
             generateAsteroids();
         }
 
-        private static void generateAsteroids() {
+        private void generateAsteroids() {
             for (int i=0; i<asteroidCount; ++i) {
                 asteroids.add(new Asteroid(AsteroidSize.LARGE));
             }
         }
 
-        public static void update(Spaceship spaceship) {
+        public void update(Spaceship spaceship) {
             spaceship.update(asteroids);
             if (asteroids.size() == 0) {
                 ++which;

@@ -49,17 +49,19 @@ public class Asteroid extends FlyingObject {
     private void generateShape() {
         vertices = new LinkedList<>();
 
-        int edges = 6 + (int)(5*Math.random());
+        int edges = 8 + (int)(4*Math.random());
         double R = size.getValue();
         double[] pair = new double[2];
+        // TODO: change pair to point2d
         pair[0] = R;
         pair[1] = 0;
         vertices.add(pair);
         for (int i=1; i<edges; ++i) {
             pair = new double[2];
             double d = Math.random() * R/2;
-            pair[0] = (R-d) * Math.cos(i * 2*Math.PI/edges);
-            pair[1] = (R-d) * Math.sin(i * 2*Math.PI/edges);
+            double phi = i * 2*Math.PI/edges - Math.random()*Math.PI/16;
+            pair[0] = (R-d) * Math.cos(phi);
+            pair[1] = (R-d) * Math.sin(phi);
             vertices.add(pair);
         }
     }
@@ -83,3 +85,4 @@ public class Asteroid extends FlyingObject {
         return vertices;
     }
 }
+// TODO: make destroyable interface
