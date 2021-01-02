@@ -21,9 +21,11 @@ abstract public class FlyingObject {
         return direction;
     }
 
-    public double getX() {
+    public void updatePosition() {
         position.add(velocity);
+    }
 
+    public double getX() {
         if (position.getX() > GameModel.RIGHT_BOUND) {
             position.setX(GameModel.LEFT_BOUND);
         } else if (position.getX() < GameModel.LEFT_BOUND) {
@@ -34,8 +36,6 @@ abstract public class FlyingObject {
     }
 
     public double getY() {
-        position.add(velocity);
-
         if (position.getY() > GameModel.TOP_BOUND) {
             position.setY(GameModel.BOTTOM_BOUND);
         } else if (position.getY() < GameModel.BOTTOM_BOUND) {

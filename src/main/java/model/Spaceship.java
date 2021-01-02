@@ -11,10 +11,16 @@ public class Spaceship extends Ship {
 
     private static final int LIVES = 3;
     private static final double INIT_DIRECTION = -Math.PI/2;
-    private static final double ROTATION = Math.PI/20;
+    private static final double ROTATION = Math.PI/80;
+    private static final double MAX_VELOCITY = 6;
 
     private final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
     private final double[] Y_SHAPE_COORDS = {-30, 30, 10, 30};
+
+    private boolean isThrusting;
+    private boolean isTurningRight;
+    private boolean isTurningLeft;
+    private boolean isShooting;
 
     private int lives;
     private final List<Bullet> bullets;
@@ -23,6 +29,7 @@ public class Spaceship extends Ship {
         super(0,0);
         lives = LIVES;
         direction = INIT_DIRECTION;
+        isThrusting = false;
         velocity = new Vector(0,0);
 
         bullets = new LinkedList<>();
@@ -44,21 +51,58 @@ public class Spaceship extends Ship {
         bullets.add(new Bullet(position, direction));
     }
 
-    public void rotateRight() {
-        this.direction += ROTATION;
+    private void rotate() {
+        if (isTurningLeft && !isTurningRight) {
+            this.direction -= ROTATION;
+        } else if (isTurningRight && !isTurningLeft) {
+            this.direction += ROTATION;
+        }
     }
 
-    public void rotateLeft() {
-        this.direction -= ROTATION;
+    public void startRotatingRight() {
+        isTurningRight = true;
     }
 
-    public void thrust() {
-        Vector force = new Vector(direction);
-        velocity.add(force);
+    public void stopRotatingRight() {
+        isTurningRight = false;
     }
 
-    public void updateVelocity() {
-        velocity.multiplyBy(0.995);
+    public void startRotatingLeft() {
+        isTurningLeft = true;
+    }
+
+    public void stopRotatingLeft() {
+        isTurningLeft = false;
+    }
+
+    @Override
+    public void updatePosition() {
+        rotate();
+        thrust();
+        super.updatePosition();
+    }
+
+    private void thrust() {
+        if (!isThrusting) {
+            velocity.multiplyBy(0.995);
+        } else {
+            Vector force = new Vector(direction);
+            velocity.add(force);
+
+            double speed = velocity.distance(new Vector(0,0));
+            if (speed > MAX_VELOCITY) {
+                velocity = new Vector(direction);
+                velocity.multiplyBy(MAX_VELOCITY);
+            }
+        }
+    }
+
+    public void startThrusting() {
+        isThrusting = true;
+    }
+
+    public void stopThrusting() {
+        isThrusting = false;
     }
 
     public int collide(Map<Integer,Asteroid> asteroids) {
@@ -72,6 +116,7 @@ public class Spaceship extends Ship {
                 looseLife();
                 break;
             }
+            asteroid.updatePosition();
         }
         for (Bullet bullet : bullets) {
             for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {

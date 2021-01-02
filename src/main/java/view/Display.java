@@ -61,32 +61,43 @@ public class Display extends JFrame implements ActionListener {
         }
         digitalFont = digitalFont.deriveFont(Font.BOLD,28);
 
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(digitalFont);
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        ge.registerFont(digitalFont);
     }
 
     private void bindShipActions() {
-        Action upAction = new UpAction();
+        Action thrustAction = new ThrustAction();
+        Action stopThrustAction = new StopThrustAction();
         Action leftAction = new LeftAction();
+        Action stopLeftAction = new StopLeftAction();
         Action rightAction = new RightAction();
+        Action stopRightAction = new StopRightAction();
         Action shootAction = new ShootAction();
         Action teleportAction = new TeleportAction();
 
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction");
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "upAction");
 
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftAction");
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "leftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "thrustAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "stopThrustAction");
 
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightAction");
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "rightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "leftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "stopLeftAction");
+
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "rightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "stopRightAction");
 
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
 
-        spaceComponent.getActionMap().put("upAction", upAction);
+
+        spaceComponent.getActionMap().put("thrustAction", thrustAction);
+        spaceComponent.getActionMap().put("stopThrustAction", stopThrustAction);
+
         spaceComponent.getActionMap().put("leftAction", leftAction);
+        spaceComponent.getActionMap().put("stopLeftAction", stopLeftAction);
+
         spaceComponent.getActionMap().put("rightAction", rightAction);
+        spaceComponent.getActionMap().put("stopRightAction", stopRightAction);
+
         spaceComponent.getActionMap().put("shootAction", shootAction);
         spaceComponent.getActionMap().put("teleportAction", teleportAction);
     }
@@ -98,24 +109,45 @@ public class Display extends JFrame implements ActionListener {
         }
     }
 
-    public static class UpAction extends AbstractAction {
+    public static class ThrustAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             GameController.boostSpaceship();
         }
     }
 
+    public static class StopThrustAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.stopBoostingSpaceship();
+        }
+    }
+
     public static class LeftAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            GameController.rotateSpaceshipLeft();
+            GameController.startRotatingSpaceshipLeft();
+        }
+    }
+
+    public static class StopLeftAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.stopRotatingSpaceshipLeft();
         }
     }
 
     public static class RightAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            GameController.rotateSpaceshipRight();
+            GameController.startRotatingSpaceshipRight();
+        }
+    }
+
+    public static class StopRightAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.stopRotatingSpaceshipRight();
         }
     }
 

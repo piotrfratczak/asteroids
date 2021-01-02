@@ -41,12 +41,20 @@ public class GameController {
         return spaceship.getYShapeCoords();
     }
 
-    public static void rotateSpaceshipRight() {
-        spaceship.rotateRight();
+    public static void startRotatingSpaceshipRight() {
+        spaceship.startRotatingRight();
     }
 
-    public static void rotateSpaceshipLeft() {
-        spaceship.rotateLeft();
+    public static void stopRotatingSpaceshipRight() {
+        spaceship.stopRotatingRight();
+    }
+
+    public static void startRotatingSpaceshipLeft() {
+        spaceship.startRotatingLeft();
+    }
+
+    public static void stopRotatingSpaceshipLeft() {
+        spaceship.stopRotatingLeft();
     }
 
     public static double getSpaceshipRotation() {
@@ -62,11 +70,15 @@ public class GameController {
     }
 
     public static void boostSpaceship() {
-        spaceship.thrust();
+        spaceship.startThrusting();
+    }
+
+    public static void stopBoostingSpaceship() {
+        spaceship.stopThrusting();
     }
 
     public static void updateSpaceship() {
-        spaceship.updateVelocity();
+        spaceship.updatePosition();
     }
 
     public static void shootSpaceship() {
