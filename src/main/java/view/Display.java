@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -19,6 +21,12 @@ public class Display extends JFrame implements ActionListener {
 
     public static final int WIDTH  = 1000;
     public static final int HEIGHT = 1000;
+    public static final int MARGIN = 50;
+
+    public static final String RES_PATH = "src/main/resources/";
+    public static final String DIGITAL_FONT = "digital-mono-7.ttf";
+
+    public static Font digitalFont;
 
     private final SpaceComponent spaceComponent;
 
@@ -37,8 +45,24 @@ public class Display extends JFrame implements ActionListener {
         bindShipActions();
         this.add(spaceComponent);
 
+        addFont();
+
         this.pack();
         this.setVisible(true);
+    }
+
+    private void addFont() {
+        try {
+            digitalFont = Font.createFont(Font.TRUETYPE_FONT, new File(RES_PATH + DIGITAL_FONT));
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        digitalFont = digitalFont.deriveFont(Font.BOLD,28);
+
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(digitalFont);
     }
 
     private void bindShipActions() {
@@ -49,8 +73,14 @@ public class Display extends JFrame implements ActionListener {
         Action teleportAction = new TeleportAction();
 
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "upAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "upAction");
+
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "leftAction");
+
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "rightAction");
+
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
 
@@ -124,6 +154,8 @@ public class Display extends JFrame implements ActionListener {
             g2.setStroke(new BasicStroke(STROKE_WIDTH));
             g2.setPaint(Color.white);
 
+            drawText(g2);
+
             GameController.collide();
             spaceshipShape.draw(g2);
             bulletShape.draw(g2);
@@ -177,6 +209,16 @@ public class Display extends JFrame implements ActionListener {
 //        private void draw(BulletShape bulletShape, Graphics2D g2) {
 //            bulletShape.draw(g2);
 //        }
+
+        private void drawText(Graphics2D g2) {
+            int lives = GameController.getLives();
+            int level = GameController.getLevel();
+            int score = GameController.getScore();
+            g2.setFont(digitalFont);
+            g2.drawString("SCORE: " + score, Display.MARGIN, Display.MARGIN);
+            g2.drawString("LIVES: " + lives, Display.MARGIN, (float)(1.5*Display.MARGIN));
+            g2.drawString("LEVEL: " + level, Display.WIDTH/2 - Display.MARGIN, Display.MARGIN);
+        }
     }
 
 }

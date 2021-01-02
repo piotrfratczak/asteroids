@@ -61,7 +61,8 @@ public class Spaceship extends Ship {
         velocity.multiplyBy(0.995);
     }
 
-    public void collide(Map<Integer,Asteroid> asteroids) {
+    public int collide(Map<Integer,Asteroid> asteroids) {
+        int scored = 0;
         for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
             Asteroid asteroid = entry.getValue();
             if (this.position.distance(asteroid.position) <= asteroid.getRadius() + 25) {
@@ -77,6 +78,7 @@ public class Spaceship extends Ship {
                 Asteroid asteroid = entry.getValue();
                 if (asteroid.isHit(bullet.position)) {
                     bullet.destroy();
+                    scored += asteroid.pointsScored();
                     List<Asteroid> children = asteroid.hit();
                     for (Asteroid child : children) asteroids.put(child.getId(), child);
                     asteroids.remove(asteroid.getId());
@@ -86,6 +88,8 @@ public class Spaceship extends Ship {
             bullet.update();
         }
         bullets.removeIf(Bullet::isBurnedOut);
+
+        return scored;
     }
 
     public List<double[]> getBulletsCoords() {

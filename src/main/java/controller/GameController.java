@@ -16,9 +16,9 @@ public class GameController {
 
     public GameController() {
         System.out.println(this.getClass().getCanonicalName());
-        spaceship = new Spaceship();
+        spaceship = new Spaceship();level     = new Level();
         display   = new Display();
-        level     = new Level();
+
     }
 
     public static String getTitle() {
@@ -81,6 +81,25 @@ public class GameController {
         level.collide(spaceship);
     }
 
+    public static int getScore() {
+        return level.getPoints();
+    }
+
+    public static int getLives() {
+        //TODO: write game over
+        int lives = spaceship.getLives();
+        if (lives < 0) {
+            spaceship = new Spaceship();
+            level = new Level();
+            return spaceship.getLives();
+        }
+        return lives;
+    }
+
+    public static int getLevel() {
+        return level.getLevel();
+    }
+
     public static List<double[]> getBulletsCoords() {
         return spaceship.getBulletsCoords();
     }
@@ -94,7 +113,7 @@ public class GameController {
         return coords;
     }
 
-    public static List<double[]> getAsteroidShape(int id) {// TODO: make it smarter get asteroid by id or sth
+    public static List<double[]> getAsteroidShape(int id) {
         return level.asteroids.get(id).getVertices();
     }
 
@@ -104,12 +123,14 @@ public class GameController {
 
     private static class Level {
 
-        int which;
+        private int which;
+        private int points;
         private int asteroidCount;
         private Map<Integer, Asteroid> asteroids;
 
         private Level() {
-            ++which;
+            which = 1;
+            points = 0;
             asteroids = new HashMap<>();
             asteroidCount = 5;
             generateAsteroids();
@@ -124,12 +145,20 @@ public class GameController {
         }
 
         public void collide(Spaceship spaceship) {
-            spaceship.collide(asteroids);
+            points += spaceship.collide(asteroids);
             if (asteroids.size() == 0) {
                 ++which;
                 ++asteroidCount;
                 generateAsteroids();
             }
+        }
+
+        public int getPoints() {
+            return points;
+        }
+
+        public int getLevel() {
+            return which;
         }
     }
 

@@ -22,7 +22,7 @@ public class Asteroid extends FlyingObject {
         setVelocity();
         generateShape();
     }
-    //TODO: the constructors are too similar
+    //TODO: repeated code alert
     private Asteroid(Asteroid that) {
         this.id = ++count;
         if (that.size == AsteroidSize.LARGE) {
@@ -53,10 +53,9 @@ public class Asteroid extends FlyingObject {
     private void generateShape() {
         vertices = new LinkedList<>();
 
-        int edges = 8 + (int)(4*Math.random());
+        int edges = 12 + (int)(4*Math.random());
         double R = size.getValue();
         double[] pair = new double[2];
-        // TODO: change pair to point2d
         pair[0] = R;
         pair[1] = 0;
         vertices.add(pair);
@@ -83,6 +82,23 @@ public class Asteroid extends FlyingObject {
         }
 
         return childAsteroids;
+    }
+
+    public int pointsScored() {
+        switch (size) {
+            case LARGE -> {
+                return 50;
+            }
+            case MEDIUM -> {
+                return 100;
+            }
+            case SMALL -> {
+                return 200;
+            }
+            default -> {
+                return 0;
+            }
+        }
     }
 
     public List<double[]> getVertices() {
