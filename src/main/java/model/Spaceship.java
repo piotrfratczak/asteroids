@@ -13,6 +13,9 @@ public class Spaceship extends Ship {
     private static final double INIT_DIRECTION = -Math.PI/2;
     private static final double ROTATION = Math.PI/20;
 
+    private final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
+    private final double[] Y_SHAPE_COORDS = {-30, 30, 10, 30};
+
     private int lives;
     private final List<Bullet> bullets;
 
@@ -23,6 +26,14 @@ public class Spaceship extends Ship {
         velocity = new Vector(0,0);
 
         bullets = new LinkedList<>();
+    }
+
+    public double[] getXShapeCoords() {
+        return X_SHAPE_COORDS;
+    }
+
+    public double[] getYShapeCoords() {
+        return Y_SHAPE_COORDS;
     }
 
     public void shoot() {

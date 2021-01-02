@@ -10,17 +10,16 @@ import java.awt.geom.NoninvertibleTransformException;
 
 public class SpaceshipShape implements Drawable{
 
-    private final int[] X_COORDS = {0, 25, 0, -25};
-    private final int[] Y_COORDS = {-30, 30, 10, 30};
-
     private final GeneralPath path;
     private double rotation;
 
     public SpaceshipShape() {
-        path = new GeneralPath(BasicStroke.JOIN_ROUND, X_COORDS.length);
-        path.moveTo(X_COORDS[0], Y_COORDS[0]);
+        double[] xCoords = GameController.getShipXShapeCoords();
+        double[] yCoords = GameController.getShipYShapeCoords();
+        path = new GeneralPath(BasicStroke.JOIN_ROUND, xCoords.length);
+        path.moveTo(xCoords[0], yCoords[0]);
         for (int i=0; i<4; ++i) {
-            path.lineTo(X_COORDS[i], Y_COORDS[i]);
+            path.lineTo(xCoords[i], yCoords[i]);
         }
         path.closePath();
     }

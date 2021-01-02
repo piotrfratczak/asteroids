@@ -124,8 +124,8 @@ public class Display extends JFrame implements ActionListener {
             g2.setStroke(new BasicStroke(STROKE_WIDTH));
             g2.setPaint(Color.white);
 
-            spaceshipShape.draw(g2);
             GameController.collide();
+            spaceshipShape.draw(g2);
             bulletShape.draw(g2);
             drawAsteroids(g2);
         }
@@ -149,6 +149,34 @@ public class Display extends JFrame implements ActionListener {
                 asteroidShape.draw(g2);
             }
         }
+
+//        private <E> void drawElement(Map<Integer, E> map, Graphics2D g2) {
+//            Set<Integer> ids = GameController.getIds(map.);
+//
+//            List<Integer> obsoleteIds = new LinkedList<>(map.keySet());
+//            obsoleteIds.removeAll(ids);
+//            for (int id : obsoleteIds) {
+//                map.remove(id);
+//            }
+//
+//            List<Integer> newIds = new LinkedList<>(ids);
+//            newIds.removeAll(map.keySet());
+//            for (int id : newIds) {
+//                map.put(id, new E(id));
+//            }
+//
+//            for (E element : map.values()) {
+//                draw(element, g2);
+//            }
+//        }
+//
+//        private void draw(AsteroidShape asteroidShape, Graphics2D g2) {
+//            asteroidShape.draw(g2);
+//        }
+//
+//        private void draw(BulletShape bulletShape, Graphics2D g2) {
+//            bulletShape.draw(g2);
+//        }
     }
 
 }

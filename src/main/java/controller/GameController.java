@@ -16,9 +16,9 @@ public class GameController {
 
     public GameController() {
         System.out.println(this.getClass().getCanonicalName());
+        spaceship = new Spaceship();
         display   = new Display();
         level     = new Level();
-        spaceship = new Spaceship();
     }
 
     public static String getTitle() {
@@ -31,6 +31,14 @@ public class GameController {
 
     public static int getGameHeight() {
         return GameModel.SPACE_HEIGHT;
+    }
+
+    public static double[] getShipXShapeCoords() {
+        return spaceship.getXShapeCoords();
+    }
+
+    public static double[] getShipYShapeCoords() {
+        return spaceship.getYShapeCoords();
     }
 
     public static void rotateSpaceshipRight() {
