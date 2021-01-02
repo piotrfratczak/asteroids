@@ -92,5 +92,9 @@ public class Asteroid extends FlyingObject {
     public int getId() {
         return id;
     }
+
+    public int getRadius() {
+        return size.getValue();
+    }
 }
 // TODO: make destroyable interface

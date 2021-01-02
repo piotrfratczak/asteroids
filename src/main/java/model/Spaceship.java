@@ -62,6 +62,16 @@ public class Spaceship extends Ship {
     }
 
     public void collide(Map<Integer,Asteroid> asteroids) {
+        for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
+            Asteroid asteroid = entry.getValue();
+            if (this.position.distance(asteroid.position) <= asteroid.getRadius() + 25) {
+                this.position = new Vector(0,0);
+                this.velocity = new Vector(0,0);
+                this.direction = INIT_DIRECTION;
+                looseLife();
+                break;
+            }
+        }
         for (Bullet bullet : bullets) {
             for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
                 Asteroid asteroid = entry.getValue();
