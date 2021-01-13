@@ -6,8 +6,7 @@ abstract public class FlyingObject {
     protected double direction;
     protected Vector velocity;
 
-    public FlyingObject() {
-    }
+    public FlyingObject() {}
 
     public FlyingObject(int posX, int posY) {
         position = new Vector(posX, posY);
@@ -46,4 +45,3 @@ abstract public class FlyingObject {
     }
 
 }
-

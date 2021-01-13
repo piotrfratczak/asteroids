@@ -12,7 +12,7 @@ public class Spaceship extends Ship {
     private static final int LIVES = 3;
     private static final double INIT_DIRECTION = -Math.PI/2;
     private static final double ROTATION = Math.PI/80;
-    private static final double MAX_VELOCITY = 6;
+    private static final double MAX_VELOCITY = 4;
 
     private final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
     private final double[] Y_SHAPE_COORDS = {-30, 30, 10, 30};
@@ -43,12 +43,22 @@ public class Spaceship extends Ship {
         return Y_SHAPE_COORDS;
     }
 
+    public void startShooting() {
+        this.isShooting = true;
+    }
+
+    public void stopShooting() {
+        this.isShooting = false;
+    }
+
     public void shoot() {
-        Vector position = new Vector(direction);
-        //TODO: get rid of this random multiplication
-        position.multiplyBy(30);
-        position.add(this.position);
-        bullets.add(new Bullet(position, direction));
+        if (isShooting) {
+            Vector position = new Vector(direction);
+            //TODO: get rid of this random multiplication
+            position.multiplyBy(30);
+            position.add(this.position);
+            bullets.add(new Bullet(position, direction));
+        }
     }
 
     private void rotate() {
@@ -79,6 +89,7 @@ public class Spaceship extends Ship {
     public void updatePosition() {
         rotate();
         thrust();
+        shoot();
         super.updatePosition();
     }
 
@@ -130,7 +141,7 @@ public class Spaceship extends Ship {
                     break;
                 }
             }
-            bullet.update();
+            bullet.updatePosition();
         }
         bullets.removeIf(Bullet::isBurnedOut);
 

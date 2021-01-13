@@ -16,7 +16,7 @@ test {
 
 jar {
     manifest {
-        attributes "Main-Class": "Controller.Game"
+        attributes "Main-Class": "controller.Game"
     }
 
     from {
@@ -25,7 +25,7 @@ jar {
 }
 
 application {
-    mainClassName = 'Controller.Game'
+    mainClassName = 'controller.Game'
 }
 
 

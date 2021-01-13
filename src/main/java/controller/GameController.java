@@ -1,9 +1,6 @@
 package controller;
 
-import model.Asteroid;
-import model.AsteroidSize;
-import model.GameModel;
-import model.Spaceship;
+import model.*;
 import view.Display;
 
 import java.util.*;
@@ -15,10 +12,9 @@ public class GameController {
     private static Spaceship spaceship;
 
     public GameController() {
-        System.out.println(this.getClass().getCanonicalName());
-        spaceship = new Spaceship();level     = new Level();
+        spaceship = new Spaceship();
+        level     = new Level();
         display   = new Display();
-
     }
 
     public static String getTitle() {
@@ -39,6 +35,14 @@ public class GameController {
 
     public static double[] getShipYShapeCoords() {
         return spaceship.getYShapeCoords();
+    }
+
+    public static double[] getUFOXShapeCoords() {
+        return level.getUFOXShapeCoords();
+    }
+
+    public static double[] getUFOYShapeCoords() {
+        return level.getUFOYShapeCoords();
     }
 
     public static void startRotatingSpaceshipRight() {
@@ -81,8 +85,12 @@ public class GameController {
         spaceship.updatePosition();
     }
 
-    public static void shootSpaceship() {
-        spaceship.shoot();
+    public static void startShooting() {
+        spaceship.startShooting();
+    }
+
+    public static void stopShooting() {
+        spaceship.stopShooting();
     }
 
     public static void teleportSpaceship() {
@@ -133,16 +141,31 @@ public class GameController {
         return level.asteroids.keySet();
     }
 
+    public static boolean updateUFOPosition() {
+        return level.updateUFOPosition();
+    }
+
+    public static double getUFOPositionX() {
+        return level.getUFOPositionX();
+    }
+
+    public static double getUFOPositionY() {
+        return level.getUFOPositionY();
+    }
+
     private static class Level {
 
         private int which;
         private int points;
         private int asteroidCount;
-        private Map<Integer, Asteroid> asteroids;
+        private final Map<Integer, Asteroid> asteroids;
+        private UFO ufo;
+        private double ufoProbability;
 
         private Level() {
             which = 1;
             points = 0;
+            ufoProbability = 0.0001;
             asteroids = new HashMap<>();
             asteroidCount = 5;
             generateAsteroids();
@@ -156,11 +179,19 @@ public class GameController {
             }
         }
 
+        private void generateUFO() {
+            if (ufo == null && Math.random() < ufoProbability) {
+                ufo = new UFO();
+            }
+        }
+
         public void collide(Spaceship spaceship) {
+            generateUFO();
             points += spaceship.collide(asteroids);
             if (asteroids.size() == 0) {
                 ++which;
                 ++asteroidCount;
+                ufoProbability *= 1.01;
                 generateAsteroids();
             }
         }
@@ -171,6 +202,38 @@ public class GameController {
 
         public int getLevel() {
             return which;
+        }
+
+        public boolean updateUFOPosition() {
+            if (ufo != null) {
+                ufo.updatePosition();
+                return true;
+            }
+            return false;
+        }
+
+        public double getUFOPositionX() {
+            if (ufo != null) {
+                return ufo.getX();
+            } else {
+                return -1;
+            }
+        }
+
+        public double getUFOPositionY() {
+            if (ufo != null) {
+                return ufo.getY();
+            } else {
+                return -1;
+            }
+        }
+
+        public double[] getUFOXShapeCoords() {
+            return UFO.getXShapeCoords();
+        }
+
+        public double[] getUFOYShapeCoords() {
+            return UFO.getYShapeCoords();
         }
     }
 

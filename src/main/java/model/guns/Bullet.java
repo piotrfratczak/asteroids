@@ -1,12 +1,12 @@
 package model.guns;
 
 import model.FlyingObject;
+import model.GameModel;
 import model.Vector;
 
 public class Bullet extends FlyingObject {
 
-    private final int TTL = 100;
-    private int timeToLive;
+    private boolean isAlive;
 
     public Bullet(Vector position, double direction) {
         super(position);
@@ -14,20 +14,33 @@ public class Bullet extends FlyingObject {
         this.velocity.multiplyBy(10);
         this.direction = direction;
 
-        this.timeToLive = TTL;
+        this.isAlive = true;
     }
 
-    public void update() {
-        --timeToLive;
-        updatePosition();
+    @Override
+    public double getX() {
+        if (position.getX() > GameModel.RIGHT_BOUND || position.getX() < GameModel.LEFT_BOUND) {
+            destroy();
+        }
+
+        return position.getX();
+    }
+
+    @Override
+    public double getY() {
+        if (position.getY() > GameModel.TOP_BOUND || position.getY() < GameModel.BOTTOM_BOUND) {
+            destroy();
+        }
+
+        return position.getY();
     }
 
     public void destroy() {
-        timeToLive = 0;
+        isAlive = false;
     }
 
     public boolean isBurnedOut() {
-        return timeToLive <= 0;
+        return !isAlive;
     }
 
 }

@@ -4,6 +4,7 @@ import controller.GameController;
 import view.drawable.AsteroidShape;
 import view.drawable.BulletShape;
 import view.drawable.SpaceshipShape;
+import view.drawable.UFOShape;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -54,9 +55,7 @@ public class Display extends JFrame implements ActionListener {
     private void addFont() {
         try {
             digitalFont = Font.createFont(Font.TRUETYPE_FONT, new File(RES_PATH + DIGITAL_FONT));
-        } catch (FontFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
         digitalFont = digitalFont.deriveFont(Font.BOLD,28);
@@ -73,19 +72,28 @@ public class Display extends JFrame implements ActionListener {
         Action rightAction = new RightAction();
         Action stopRightAction = new StopRightAction();
         Action shootAction = new ShootAction();
+        Action stopShootAction = new StopShootAction();
         Action teleportAction = new TeleportAction();
 
 
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "thrustAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "thrustAction");
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "stopThrustAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "stopThrustAction");
 
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "leftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "leftAction");
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "stopLeftAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "stopLeftAction");
 
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "rightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "rightAction");
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "stopRightAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "stopRightAction");
 
-        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "shootAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "shootAction");
+        spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "stopShootAction");
+
         spaceComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
 
 
@@ -99,6 +107,8 @@ public class Display extends JFrame implements ActionListener {
         spaceComponent.getActionMap().put("stopRightAction", stopRightAction);
 
         spaceComponent.getActionMap().put("shootAction", shootAction);
+        spaceComponent.getActionMap().put("stopShootAction", stopShootAction);
+
         spaceComponent.getActionMap().put("teleportAction", teleportAction);
     }
 
@@ -154,7 +164,14 @@ public class Display extends JFrame implements ActionListener {
     public static class ShootAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            GameController.shootSpaceship();
+            GameController.startShooting();
+        }
+    }
+
+    public static class StopShootAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameController.stopShooting();
         }
     }
 
@@ -172,11 +189,13 @@ public class Display extends JFrame implements ActionListener {
         private final SpaceshipShape spaceshipShape;
         private final BulletShape bulletShape;
         private final Map<Integer, AsteroidShape> asteroidShapes;
+        private final UFOShape ufoShape;
 
         SpaceComponent() {
             spaceshipShape = new SpaceshipShape();
             bulletShape = new BulletShape();
             asteroidShapes = new HashMap<>();
+            ufoShape = new UFOShape();
         }
 
         @Override
@@ -190,6 +209,7 @@ public class Display extends JFrame implements ActionListener {
 
             GameController.collide();
             spaceshipShape.draw(g2);
+            ufoShape.draw(g2);
             bulletShape.draw(g2);
             drawAsteroids(g2);
         }
