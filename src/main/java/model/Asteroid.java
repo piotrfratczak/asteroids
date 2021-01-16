@@ -40,9 +40,9 @@ public class Asteroid extends FlyingObject {
     private void setVelocity() {
         double factor;
         switch (size) {
-            case LARGE -> factor = 0.5;
-            case MEDIUM -> factor = 0.7;
-            case SMALL -> factor = 1;
+            case LARGE -> factor = 0.2;
+            case MEDIUM -> factor = 0.5;
+            case SMALL -> factor = 0.8;
             default -> factor = 0; //TODO: maybe throw an exception
         }
         Vector velocity = new Vector(direction);

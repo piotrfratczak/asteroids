@@ -11,7 +11,7 @@ public class Bullet extends FlyingObject {
     public Bullet(Vector position, double direction) {
         super(position);
         this.velocity = new Vector(direction);
-        this.velocity.multiplyBy(10);
+        this.velocity.multiplyBy(3);
         this.direction = direction;
 
         this.isAlive = true;

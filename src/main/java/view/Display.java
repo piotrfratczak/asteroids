@@ -31,9 +31,10 @@ public class Display extends JFrame implements ActionListener {
 
     private final SpaceComponent spaceComponent;
 
-    private final Timer timer = new Timer(3, this);
+    private Timer timer;
 
     public Display() {
+        timer = new Timer(3, this);
         timer.start();
 
         this.setTitle(GameController.getTitle());
@@ -234,42 +235,18 @@ public class Display extends JFrame implements ActionListener {
             }
         }
 
-//        private <E> void drawElement(Map<Integer, E> map, Graphics2D g2) {
-//            Set<Integer> ids = GameController.getIds(map.);
-//
-//            List<Integer> obsoleteIds = new LinkedList<>(map.keySet());
-//            obsoleteIds.removeAll(ids);
-//            for (int id : obsoleteIds) {
-//                map.remove(id);
-//            }
-//
-//            List<Integer> newIds = new LinkedList<>(ids);
-//            newIds.removeAll(map.keySet());
-//            for (int id : newIds) {
-//                map.put(id, new E(id));
-//            }
-//
-//            for (E element : map.values()) {
-//                draw(element, g2);
-//            }
-//        }
-//
-//        private void draw(AsteroidShape asteroidShape, Graphics2D g2) {
-//            asteroidShape.draw(g2);
-//        }
-//
-//        private void draw(BulletShape bulletShape, Graphics2D g2) {
-//            bulletShape.draw(g2);
-//        }
-
         private void drawText(Graphics2D g2) {
             int lives = GameController.getLives();
+//            if (lives == 0) {
+//                g2.drawString("GAME OVER", Display.WIDTH / 2 - Display.MARGIN, Display.HEIGHT/2);
+//
+//            } else {
             int level = GameController.getLevel();
             int score = GameController.getScore();
             g2.setFont(digitalFont);
             g2.drawString("SCORE: " + score, Display.MARGIN, Display.MARGIN);
-            g2.drawString("LIVES: " + lives, Display.MARGIN, (float)(1.5*Display.MARGIN));
-            g2.drawString("LEVEL: " + level, Display.WIDTH/2 - Display.MARGIN, Display.MARGIN);
+            g2.drawString("LIVES: " + lives, Display.MARGIN, (float) (1.5 * Display.MARGIN));
+            g2.drawString("LEVEL: " + level, Display.WIDTH / 2 - Display.MARGIN, Display.MARGIN);
         }
     }
 

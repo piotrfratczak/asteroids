@@ -4,15 +4,17 @@ import model.guns.Bullet;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class Spaceship extends Ship {
 
-    private static final int LIVES = 3;
-    private static final double INIT_DIRECTION = -Math.PI/2;
-    private static final double ROTATION = Math.PI/80;
-    private static final double MAX_VELOCITY = 4;
+    private final int LIVES = 3;
+    private final double INIT_DIRECTION = -Math.PI/2;
+    private final double ROTATION = Math.PI/120;
+    private final double MAX_VELOCITY = 3;
+    private final double BOOST = 0.4;
+    private final double FRICTION = 0.99;
+    private final int SPACESHIP_FRAME_OFFSET = 30;
 
     private final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
     private final double[] Y_SHAPE_COORDS = {-30, 30, 10, 30};
@@ -23,7 +25,6 @@ public class Spaceship extends Ship {
     private boolean isShooting;
 
     private int lives;
-    private final List<Bullet> bullets;
 
     public Spaceship() {
         super(0,0);
@@ -31,8 +32,6 @@ public class Spaceship extends Ship {
         direction = INIT_DIRECTION;
         isThrusting = false;
         velocity = new Vector(0,0);
-
-        bullets = new LinkedList<>();
     }
 
     public double[] getXShapeCoords() {
@@ -51,14 +50,14 @@ public class Spaceship extends Ship {
         this.isShooting = false;
     }
 
-    public void shoot() {
+    public Bullet shoot() {
         if (isShooting) {
             Vector position = new Vector(direction);
-            //TODO: get rid of this random multiplication
-            position.multiplyBy(30);
+            position.multiplyBy(SPACESHIP_FRAME_OFFSET);
             position.add(this.position);
-            bullets.add(new Bullet(position, direction));
+            return new Bullet(position, direction);
         }
+        return null;
     }
 
     private void rotate() {
@@ -95,9 +94,10 @@ public class Spaceship extends Ship {
 
     private void thrust() {
         if (!isThrusting) {
-            velocity.multiplyBy(0.995);
+            velocity.multiplyBy(FRICTION);
         } else {
             Vector force = new Vector(direction);
+            force.multiplyBy(BOOST);
             velocity.add(force);
 
             double speed = velocity.distance(new Vector(0,0));
@@ -116,49 +116,6 @@ public class Spaceship extends Ship {
         isThrusting = false;
     }
 
-    public int collide(Map<Integer,Asteroid> asteroids) {
-        int scored = 0;
-        for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
-            Asteroid asteroid = entry.getValue();
-            if (this.position.distance(asteroid.position) <= asteroid.getRadius() + 25) {
-                this.position = new Vector(0,0);
-                this.velocity = new Vector(0,0);
-                this.direction = INIT_DIRECTION;
-                looseLife();
-                break;
-            }
-            asteroid.updatePosition();
-        }
-        for (Bullet bullet : bullets) {
-            for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
-                Asteroid asteroid = entry.getValue();
-                if (asteroid.isHit(bullet.position)) {
-                    bullet.destroy();
-                    scored += asteroid.pointsScored();
-                    List<Asteroid> children = asteroid.hit();
-                    for (Asteroid child : children) asteroids.put(child.getId(), child);
-                    asteroids.remove(asteroid.getId());
-                    break;
-                }
-            }
-            bullet.updatePosition();
-        }
-        bullets.removeIf(Bullet::isBurnedOut);
-
-        return scored;
-    }
-
-    public List<double[]> getBulletsCoords() {
-        List<double[]> coords = new LinkedList<>();
-        for (Bullet bullet : bullets) {
-            double[] pair = new double[2];
-            pair[0] = bullet.getX();
-            pair[1] = bullet.getY();
-            coords.add(pair);
-        }
-        return coords;
-    }
-
     public void teleport() {
         Random rand = new Random();
         int newX = rand.nextInt(GameModel.SPACE_WIDTH + 1) + GameModel.LEFT_BOUND;
@@ -170,8 +127,15 @@ public class Spaceship extends Ship {
         return this.lives;
     }
 
-    public void looseLife() {
-        --this.lives;
+    public boolean collides(Vector flyingObjectPosition, double flyingObjectRadius) {
+        if (this.position.distance(flyingObjectPosition) <= flyingObjectRadius + 25) {
+            this.position = new Vector(0, 0);
+            this.velocity = new Vector(0, 0);
+            this.direction = INIT_DIRECTION;
+            --this.lives;
+            return true;
+        }
+        return false;
     }
 
 }

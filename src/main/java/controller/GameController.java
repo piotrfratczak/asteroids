@@ -8,12 +8,10 @@ import java.util.*;
 public class GameController {
 
     private static Display display;
-    private static Level level;
-    private static Spaceship spaceship;
+    private static GameModel game;
 
     public GameController() {
-        spaceship = new Spaceship();
-        level     = new Level();
+        game      = new GameModel();
         display   = new Display();
     }
 
@@ -30,211 +28,127 @@ public class GameController {
     }
 
     public static double[] getShipXShapeCoords() {
-        return spaceship.getXShapeCoords();
+        return game.getShipXShapeCoords();
     }
 
     public static double[] getShipYShapeCoords() {
-        return spaceship.getYShapeCoords();
+        return game.getShipYShapeCoords();
     }
 
-    public static double[] getUFOXShapeCoords() {
-        return level.getUFOXShapeCoords();
+    public static double[] getUFOLargeXShapeCoords() {
+        return UFO.getLargeXShapeCoords();
     }
 
-    public static double[] getUFOYShapeCoords() {
-        return level.getUFOYShapeCoords();
+    public static double[] getUFOLargeYShapeCoords() {
+        return UFO.getLargeYShapeCoords();
     }
 
+    public static double[] getUFOSmallXShapeCoords() {
+        return UFO.getSmallXShapeCoords();
+    }
+
+    public static double[] getUFOSmallYShapeCoords() {
+        return UFO.getSmallYShapeCoords();
+    }
     public static void startRotatingSpaceshipRight() {
-        spaceship.startRotatingRight();
+        game.startRotatingSpaceshipRight();
     }
 
     public static void stopRotatingSpaceshipRight() {
-        spaceship.stopRotatingRight();
+        game.stopRotatingSpaceshipRight();
     }
 
     public static void startRotatingSpaceshipLeft() {
-        spaceship.startRotatingLeft();
+        game.startRotatingSpaceshipLeft();
     }
 
     public static void stopRotatingSpaceshipLeft() {
-        spaceship.stopRotatingLeft();
+        game.stopRotatingSpaceshipLeft();
     }
 
     public static double getSpaceshipRotation() {
-        return spaceship.getDirection();
+        return game.getSpaceshipRotation();
     }
 
     public static double getSpaceshipX() {
-        return spaceship.getX();
+        return game.getSpaceshipX();
     }
 
     public static double getSpaceshipY() {
-        return spaceship.getY();
+        return game.getSpaceshipY();
     }
 
     public static void boostSpaceship() {
-        spaceship.startThrusting();
+        game.boostSpaceship();
     }
 
     public static void stopBoostingSpaceship() {
-        spaceship.stopThrusting();
+        game.stopBoostingSpaceship();
     }
 
     public static void updateSpaceship() {
-        spaceship.updatePosition();
+        game.updateSpaceship();
     }
 
     public static void startShooting() {
-        spaceship.startShooting();
+        game.startShooting();
     }
 
     public static void stopShooting() {
-        spaceship.stopShooting();
+        game.stopShooting();
     }
 
     public static void teleportSpaceship() {
-        spaceship.teleport();
+        game.teleportSpaceship();
     }
 
     public static void collide() {//TODO: rename
-        level.collide(spaceship);
+        game.collide();
     }
 
     public static int getScore() {
-        return level.getPoints();
+        return game.getPoints();
     }
 
     public static int getLives() {
         //TODO: write game over
-        int lives = spaceship.getLives();
-        if (lives < 0) {
-            spaceship = new Spaceship();
-            level = new Level();
-            return spaceship.getLives();
-        }
-        return lives;
+        return game.getLives();
     }
 
     public static int getLevel() {
-        return level.getLevel();
+        return game.getLevel();
     }
 
     public static List<double[]> getBulletsCoords() {
-        return spaceship.getBulletsCoords();
+        return game.getBulletsCoords();
     }
 
     public static double[] getAsteroidCoords(int id) {
-        Asteroid asteroid = level.asteroids.get(id);
-        double[] coords = new double[2];
-        coords[0] = asteroid.getX();
-        coords[1] = asteroid.getY();
-
-        return coords;
+        return game.getAsteroidCoords(id);
     }
 
     public static List<double[]> getAsteroidShape(int id) {
-        return level.asteroids.get(id).getVertices();
+        return game.getAsteroidShape(id);
     }
 
     public static Set<Integer> getAsteroidIds() {
-        return level.asteroids.keySet();
+        return game.getAsteroidIds();
     }
 
     public static boolean updateUFOPosition() {
-        return level.updateUFOPosition();
+        return game.updateUFOPosition();
     }
 
     public static double getUFOPositionX() {
-        return level.getUFOPositionX();
+        return game.getUFOPositionX();
     }
 
     public static double getUFOPositionY() {
-        return level.getUFOPositionY();
+        return game.getUFOPositionY();
     }
 
-    private static class Level {
-
-        private int which;
-        private int points;
-        private int asteroidCount;
-        private final Map<Integer, Asteroid> asteroids;
-        private UFO ufo;
-        private double ufoProbability;
-
-        private Level() {
-            which = 1;
-            points = 0;
-            ufoProbability = 0.0001;
-            asteroids = new HashMap<>();
-            asteroidCount = 5;
-            generateAsteroids();
-        }
-
-        private void generateAsteroids() {
-            for (int i=0; i<asteroidCount; ++i) {
-                Asteroid asteroid = new Asteroid(AsteroidSize.LARGE);
-                Integer id = asteroid.getId();
-                asteroids.put(id, asteroid);
-            }
-        }
-
-        private void generateUFO() {
-            if (ufo == null && Math.random() < ufoProbability) {
-                ufo = new UFO();
-            }
-        }
-
-        public void collide(Spaceship spaceship) {
-            generateUFO();
-            points += spaceship.collide(asteroids);
-            if (asteroids.size() == 0) {
-                ++which;
-                ++asteroidCount;
-                ufoProbability *= 1.01;
-                generateAsteroids();
-            }
-        }
-
-        public int getPoints() {
-            return points;
-        }
-
-        public int getLevel() {
-            return which;
-        }
-
-        public boolean updateUFOPosition() {
-            if (ufo != null) {
-                ufo.updatePosition();
-                return true;
-            }
-            return false;
-        }
-
-        public double getUFOPositionX() {
-            if (ufo != null) {
-                return ufo.getX();
-            } else {
-                return -1;
-            }
-        }
-
-        public double getUFOPositionY() {
-            if (ufo != null) {
-                return ufo.getY();
-            } else {
-                return -1;
-            }
-        }
-
-        public double[] getUFOXShapeCoords() {
-            return UFO.getXShapeCoords();
-        }
-
-        public double[] getUFOYShapeCoords() {
-            return UFO.getYShapeCoords();
-        }
+    public static char getUFOSize() {
+        return game.getUFOSize();
     }
 
 }

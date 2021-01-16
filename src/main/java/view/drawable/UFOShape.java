@@ -10,15 +10,23 @@ import java.awt.geom.NoninvertibleTransformException;
 
 public class UFOShape implements Drawable {
 
-    private final GeneralPath path;
+    private final GeneralPath pathLarge;
+    private final GeneralPath pathSmall;
 
     public UFOShape() {
-        double[] xCoords = GameController.getUFOXShapeCoords();
-        double[] yCoords = GameController.getUFOYShapeCoords();
-        path = new GeneralPath(BasicStroke.JOIN_ROUND, xCoords.length);
-        path.moveTo(xCoords[0], yCoords[0]);
-        for (int i=0; i<12; ++i) {
-            path.lineTo(xCoords[i], yCoords[i]);
+        double[] xCoordsLarge = GameController.getUFOLargeXShapeCoords();
+        double[] yCoordsLarge = GameController.getUFOLargeYShapeCoords();
+        pathLarge = new GeneralPath(BasicStroke.JOIN_ROUND, xCoordsLarge.length);
+        pathLarge.moveTo(xCoordsLarge[0], yCoordsLarge[0]);
+
+        double[] xCoordsSmall = GameController.getUFOSmallXShapeCoords();
+        double[] yCoordsSmall = GameController.getUFOSmallYShapeCoords();
+        pathSmall = new GeneralPath(BasicStroke.JOIN_ROUND, xCoordsSmall.length);
+        pathSmall.moveTo(xCoordsSmall[0], yCoordsSmall[0]);
+
+        for (int i=0; i<xCoordsLarge.length; ++i) {
+            pathLarge.lineTo(xCoordsLarge[i], yCoordsLarge[i]);
+            pathSmall.lineTo(xCoordsSmall[i], yCoordsSmall[i]);
         }
     }
 
@@ -38,10 +46,11 @@ public class UFOShape implements Drawable {
     private void paintOffset(Graphics2D g2, double x, double y) {
         AffineTransform transform = new AffineTransform();
         transform.translate(Display.WIDTH/2.0 + x,Display.HEIGHT/2.0 + y);
-//        transform.rotate(rotation + Math.PI/2);
-
         g2.transform(transform);
-        g2.draw(path);
+
+        if (GameController.getUFOSize() == 'L') g2.draw(pathLarge);
+        else if (GameController.getUFOSize() == 'S') g2.draw(pathSmall);
+        else return;
 
         try{
             g2.transform(transform.createInverse());

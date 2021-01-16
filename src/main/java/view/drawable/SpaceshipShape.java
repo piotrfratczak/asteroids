@@ -1,5 +1,6 @@
 package view.drawable;
 
+import controller.Game;
 import controller.GameController;
 import view.Display;
 
@@ -18,7 +19,7 @@ public class SpaceshipShape implements Drawable{
         double[] yCoords = GameController.getShipYShapeCoords();
         path = new GeneralPath(BasicStroke.JOIN_ROUND, xCoords.length);
         path.moveTo(xCoords[0], yCoords[0]);
-        for (int i=0; i<4; ++i) {
+        for (int i=0; i<xCoords.length; ++i) {
             path.lineTo(xCoords[i], yCoords[i]);
         }
         path.closePath();

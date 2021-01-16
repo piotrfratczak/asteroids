@@ -10,6 +10,4 @@ abstract class Ship extends FlyingObject {
         super(posX, posY);
     }
 
-    abstract public void shoot();
-
 }
