@@ -8,12 +8,11 @@ import java.util.Random;
 
 public class Spaceship extends Ship {
 
-    private final int LIVES = 3;
     private final double INIT_DIRECTION = -Math.PI/2;
     private final double ROTATION = Math.PI/120;
-    private final double MAX_VELOCITY = 3;
-    private final double BOOST = 0.4;
-    private final double FRICTION = 0.99;
+    private final double MAX_VELOCITY = 2;
+    private final double BOOST = 0.3;
+    private final double FRICTION = 0.995;
     private final int SPACESHIP_FRAME_OFFSET = 30;
 
     private final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
@@ -24,11 +23,8 @@ public class Spaceship extends Ship {
     private boolean isTurningLeft;
     private boolean isShooting;
 
-    private int lives;
-
     public Spaceship() {
         super(0,0);
-        lives = LIVES;
         direction = INIT_DIRECTION;
         isThrusting = false;
         velocity = new Vector(0,0);
@@ -123,16 +119,11 @@ public class Spaceship extends Ship {
         this.position = new Vector(newX, newY);
     }
 
-    public int getLives() {
-        return this.lives;
-    }
-
     public boolean collides(Vector flyingObjectPosition, double flyingObjectRadius) {
         if (this.position.distance(flyingObjectPosition) <= flyingObjectRadius + 25) {
             this.position = new Vector(0, 0);
             this.velocity = new Vector(0, 0);
             this.direction = INIT_DIRECTION;
-            --this.lives;
             return true;
         }
         return false;

@@ -27,7 +27,6 @@ public class SpaceshipShape implements Drawable{
 
     @Override
     public void draw(Graphics2D g2) {
-        GameController.updateSpaceship();
         double x = Display.WIDTH / (double)GameController.getGameWidth() * GameController.getSpaceshipX();
         double y = Display.HEIGHT / (double)GameController.getGameHeight() * GameController.getSpaceshipY();
 

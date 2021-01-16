@@ -6,15 +6,11 @@ enum GameStatus {
 
 public class GameLoop {
 
-    private GameController controller;
     private Thread gameThread;
     private volatile GameStatus status;
 
     public GameLoop() {
-
-        controller = new GameController();
         status = GameStatus.STOPPED;
-
     }
 
     public void start() {
@@ -33,9 +29,9 @@ public class GameLoop {
 
     private void processGameLoop() {
         while (isRunning()) {
-            processInput();
-            update();
-            render();
+                processInput();
+                update();
+                render();
         }
     }
 
@@ -43,16 +39,28 @@ public class GameLoop {
         //TODO: process input
         //TODO: log exceptions
         try {
-            Thread.sleep(10);
+            Thread.sleep(4);
         } catch (InterruptedException e) {
 
         }
+        // TODO: better timer
     }
 
     private void render() {
+        GameController.render();
     }
 
     private void update() {
+        if (GameController.isGameOver()) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+
+            }
+            GameController.startNewGame();
+        }
+
+        GameController.update();
     }
 
 }

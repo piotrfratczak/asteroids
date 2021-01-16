@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Game" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="src.controller.Game" />
+    <option name="MAIN_CLASS_NAME" value="controller.Game" />
     <module name="Asteroids.main" />
     <extension name="coverage">
       <pattern>

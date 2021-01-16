@@ -32,7 +32,7 @@ public class UFOShape implements Drawable {
 
     @Override
     public void draw(Graphics2D g2) {
-        if (!GameController.updateUFOPosition()) return;
+        if (!GameController.flyingUFO()) return;
         double x = Display.WIDTH / (double)GameController.getGameWidth() * GameController.getUFOPositionX();
         double y = Display.HEIGHT / (double)GameController.getGameHeight() * GameController.getUFOPositionY();
 

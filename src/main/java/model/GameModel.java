@@ -15,12 +15,14 @@ public class GameModel {
     public static final int LEFT_BOUND   = -500;
     public static final int BOTTOM_BOUND = -500;
 
+    private final int LIVES = 3;
     private final int INITIAL_ASTEROID_COUNT = 4;
     private final double INITAL_UFO_PROBABILITY = 0.0001;
     private final double UFO_PROBABILITY_CHANGE_RATE = 1.01;
 
     private int level;
     private int points;
+    private int lives;
     private int asteroidCount;
     private Map<Integer, Asteroid> asteroids;
     private List<Bullet> bullets;
@@ -34,7 +36,8 @@ public class GameModel {
         startNewGame();
     }
 
-    private void startNewGame() {
+    public void startNewGame() {
+        lives = LIVES;
         level = 1;
         points = 0;
         ufoProbability = INITAL_UFO_PROBABILITY;
@@ -60,7 +63,12 @@ public class GameModel {
         }
     }
 
-    public void collide() {
+    public boolean isOver() {
+        return lives <= 0;
+    }
+
+    public void update() {
+        if (lives <= 0) return;
         generateUFO();
         if (asteroids.size() == 0) {
             ++level;
@@ -75,12 +83,32 @@ public class GameModel {
         collideBulletsAndUFO();
         collideSpaceshipAndUFO();
         collideUfoBulletsAndSpaceship();
+        updateUFOPosition();
+        updateSpaceship();
+    }
+
+    private void updateSpaceship() {
+        spaceship.updatePosition();
+        Bullet nextBullet = spaceship.shoot();
+        if (nextBullet != null) {
+            bullets.add(nextBullet);
+        }
+    }
+
+    private void updateUFOPosition() {
+        if (ufo == null) return;
+        ufo.updatePosition();
+        Bullet nextBullet = ufo.shoot();
+        if (nextBullet != null) {
+            ufoBullets.add(nextBullet);
+        }
     }
 
     private void collideAsteroidsAndSpaceship() {
         for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
             Asteroid asteroid = entry.getValue();
             if (this.spaceship.collides(asteroid.position, asteroid.getRadius())) {
+                --lives;
                 hitAsteroid(asteroid);
                 break;
             }
@@ -118,6 +146,7 @@ public class GameModel {
     private void collideSpaceshipAndUFO() {
         if (ufo == null) return;
         if (this.spaceship.collides(this.ufo.position, 25)) {
+            --lives;
             ufo = null;
         }
     }
@@ -209,23 +238,11 @@ public class GameModel {
         return spaceship.getYShapeCoords();
     }
 
-    public boolean updateUFOPosition() {
-        if (ufo != null) {
-            ufo.updatePosition();
-            Bullet nextBullet = ufo.shoot();
-            if (nextBullet != null) {
-                ufoBullets.add(nextBullet);
-            }
-            return true;
-        }
-        return false;
-    }
-
     public double getUFOPositionX() {
         if (ufo != null) {
             return ufo.getX();
         } else {
-            return -1;
+            return SPACE_WIDTH;
         }
     }
 
@@ -233,7 +250,7 @@ public class GameModel {
         if (ufo != null) {
             return ufo.getY();
         } else {
-            return -1;
+            return SPACE_HEIGHT;
         }
     }
 
@@ -273,14 +290,6 @@ public class GameModel {
         spaceship.stopThrusting();
     }
 
-    public void updateSpaceship() {
-        spaceship.updatePosition();
-        Bullet nextBullet = spaceship.shoot();
-        if (nextBullet != null) {
-            bullets.add(nextBullet);
-        }
-    }
-
     public void startShooting() {
         spaceship.startShooting();
     }
@@ -294,11 +303,6 @@ public class GameModel {
     }
 
     public int getLives() {
-        int lives = spaceship.getLives();
-        if (lives < 0) {
-            startNewGame();
-            lives = spaceship.getLives();
-        }
         return lives;
     }
 
@@ -313,5 +317,9 @@ public class GameModel {
     public char getUFOSize() {
         if (ufo == null) return '-';
         return ufo.getSize();
+    }
+
+    public boolean flyingUFO() {
+        return this.ufo != null;
     }
 }

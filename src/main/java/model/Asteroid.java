@@ -22,7 +22,9 @@ public class Asteroid extends FlyingObject {
         setVelocity();
         generateShape();
     }
-    //TODO: repeated code alert
+
+    // TODO: add bonus stars
+
     private Asteroid(Asteroid that) {
         this.id = ++count;
         if (that.size == AsteroidSize.LARGE) {
@@ -43,7 +45,7 @@ public class Asteroid extends FlyingObject {
             case LARGE -> factor = 0.2;
             case MEDIUM -> factor = 0.5;
             case SMALL -> factor = 0.8;
-            default -> factor = 0; //TODO: maybe throw an exception
+            default -> factor = 0;
         }
         Vector velocity = new Vector(direction);
         velocity.multiplyBy(factor);

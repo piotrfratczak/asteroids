@@ -7,12 +7,21 @@ import java.util.*;
 
 public class GameController {
 
-    private static Display display;
-    private static GameModel game;
+    private static final GameModel game = new GameModel();
+    private static final Display display = new Display();
 
-    public GameController() {
-        game      = new GameModel();
-        display   = new Display();
+    private GameController() {}
+
+    public static void startNewGame() {
+        game.startNewGame();
+    }
+
+    public static void render() {
+        display.repaint();
+    }
+
+    public static boolean isGameOver() {
+        return game.isOver();
     }
 
     public static String getTitle() {
@@ -50,6 +59,7 @@ public class GameController {
     public static double[] getUFOSmallYShapeCoords() {
         return UFO.getSmallYShapeCoords();
     }
+
     public static void startRotatingSpaceshipRight() {
         game.startRotatingSpaceshipRight();
     }
@@ -86,10 +96,6 @@ public class GameController {
         game.stopBoostingSpaceship();
     }
 
-    public static void updateSpaceship() {
-        game.updateSpaceship();
-    }
-
     public static void startShooting() {
         game.startShooting();
     }
@@ -102,8 +108,8 @@ public class GameController {
         game.teleportSpaceship();
     }
 
-    public static void collide() {//TODO: rename
-        game.collide();
+    public static void update() {//TODO: rename
+        game.update();
     }
 
     public static int getScore() {
@@ -135,10 +141,6 @@ public class GameController {
         return game.getAsteroidIds();
     }
 
-    public static boolean updateUFOPosition() {
-        return game.updateUFOPosition();
-    }
-
     public static double getUFOPositionX() {
         return game.getUFOPositionX();
     }
@@ -151,4 +153,7 @@ public class GameController {
         return game.getUFOSize();
     }
 
+    public static boolean flyingUFO() {
+        return game.flyingUFO();
+    }
 }
