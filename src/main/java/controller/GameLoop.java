@@ -9,8 +9,12 @@ public class GameLoop {
     private Thread gameThread;
     private volatile GameStatus status;
 
+    private boolean gameStopped;
+
     public GameLoop() {
         status = GameStatus.STOPPED;
+        gameStopped = false;
+        new GameController();
     }
 
     public void start() {
@@ -36,6 +40,7 @@ public class GameLoop {
     }
 
     private void processInput() {
+        if (GameController.isQuitting()) stop();
         //TODO: process input
         //TODO: log exceptions
         try {
@@ -44,6 +49,15 @@ public class GameLoop {
 
         }
         // TODO: better timer
+
+        if (GameController.isGameOver() && GameController.isInGame()) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+
+            }
+            GameController.goToMenu();
+        }
     }
 
     private void render() {
@@ -51,15 +65,6 @@ public class GameLoop {
     }
 
     private void update() {
-        if (GameController.isGameOver()) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-
-            }
-            GameController.startNewGame();
-        }
-
         GameController.update();
     }
 

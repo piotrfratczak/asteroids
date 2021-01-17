@@ -28,28 +28,28 @@ public class GameModel {
     private List<Bullet> bullets;
     private List<Bullet> ufoBullets;
     private double ufoProbability;
+    private boolean enhancedMode;
     private UFO ufo;
     private Spaceship spaceship;
 
 
-    public GameModel() {
-        startNewGame();
-    }
+    public GameModel() {}
 
-    public void startNewGame() {
-        lives = LIVES;
-        level = 1;
-        points = 0;
-        ufoProbability = INITAL_UFO_PROBABILITY;
-        asteroidCount = INITIAL_ASTEROID_COUNT;
-        spaceship = new Spaceship();
+    public void startNewGame(boolean enhacedMode) {
+        this.lives = LIVES;
+        this.level = 1;
+        this.points = 0;
+        this.enhancedMode = enhacedMode;
+        this.ufoProbability = INITAL_UFO_PROBABILITY;
+        this.asteroidCount = INITIAL_ASTEROID_COUNT;
+        this.spaceship = new Spaceship();
         generateAsteroids();
     }
 
     private void generateAsteroids() {
-        asteroids = new HashMap<>();
-        bullets = new LinkedList<>();
-        ufoBullets = new LinkedList<>();
+        this.asteroids = new HashMap<>();
+        this.bullets = new LinkedList<>();
+        this.ufoBullets = new LinkedList<>();
         for (int i=0; i<asteroidCount; ++i) {
             Asteroid asteroid = new Asteroid(AsteroidSize.LARGE);
             Integer id = asteroid.getId();

@@ -7,21 +7,47 @@ import java.util.*;
 
 public class GameController {
 
-    private static final GameModel game = new GameModel();
-    private static final Display display = new Display();
+    private static GameModel game;
+    private static Display display;
 
-    private GameController() {}
+    private static boolean quiting = false;
+    private static boolean inGame = false;
 
-    public static void startNewGame() {
-        game.startNewGame();
+    public GameController() {
+        game = new GameModel();
+        display = new Display();
+    }
+
+    public static void startNewGame(boolean enhancedMode) {
+        inGame = true;
+        game.startNewGame(enhancedMode);
+        display.game();
     }
 
     public static void render() {
         display.repaint();
     }
 
+    public static void goToMenu() {
+        inGame = false;
+        display.menu();
+    }
+
     public static boolean isGameOver() {
         return game.isOver();
+    }
+
+    public static boolean isInGame() {
+        return inGame;
+    }
+
+    public static void closeWindow() {
+        quiting = true;
+        display.dispose();
+    }
+
+    public static boolean isQuitting() {
+        return quiting;
     }
 
     public static String getTitle() {
@@ -108,7 +134,7 @@ public class GameController {
         game.teleportSpaceship();
     }
 
-    public static void update() {//TODO: rename
+    public static void update() {
         game.update();
     }
 
@@ -117,7 +143,6 @@ public class GameController {
     }
 
     public static int getLives() {
-        //TODO: write game over
         return game.getLives();
     }
 
