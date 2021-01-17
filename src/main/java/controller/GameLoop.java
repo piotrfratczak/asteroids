@@ -41,12 +41,10 @@ public class GameLoop {
 
     private void processInput() {
         if (GameController.isQuitting()) stop();
-        //TODO: process input
-        //TODO: log exceptions
         try {
             Thread.sleep(4);
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
         // TODO: better timer
 
@@ -54,9 +52,13 @@ public class GameLoop {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-
+                e.printStackTrace();
             }
             GameController.goToMenu();
+        }
+
+        if (GameController.isStartingGame()) {
+            GameController.executeNewGame();
         }
     }
 

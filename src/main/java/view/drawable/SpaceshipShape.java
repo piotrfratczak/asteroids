@@ -9,6 +9,7 @@ import java.awt.geom.GeneralPath;
 public class SpaceshipShape implements Drawable{
 
     private final GeneralPath path;
+    private final int r = 90;
 
     public SpaceshipShape() {
         double[] xCoords = GameController.getShipXShapeCoords();
@@ -27,7 +28,8 @@ public class SpaceshipShape implements Drawable{
         double y = Display.HEIGHT / (double)GameController.getGameHeight() * GameController.getSpaceshipY();
         double rotation = GameController.getSpaceshipRotation() + Math.PI/2;
 
-        // Draw the actual ship
+        if (GameController.spaceshipHasShield()) g2.drawOval((int)x + Display.WIDTH/2 - r/2, (int)y + Display.HEIGHT/2 - r/2 , r, r);
+
         drawEdgeProof(g2, path, rotation, x, y);
     }
 }

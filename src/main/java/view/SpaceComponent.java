@@ -1,10 +1,7 @@
 package view;
 
 import controller.GameController;
-import view.drawable.AsteroidShape;
-import view.drawable.BulletShape;
-import view.drawable.SpaceshipShape;
-import view.drawable.UFOShape;
+import view.drawable.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +20,7 @@ public class SpaceComponent extends AbstractComponent {
     private final BulletShape bulletShape;
     private final Map<Integer, AsteroidShape> asteroidShapes;
     private final UFOShape ufoShape;
+    private final StarShape starShape;
 
     SpaceComponent() {
         super();
@@ -30,6 +28,7 @@ public class SpaceComponent extends AbstractComponent {
         bulletShape = new BulletShape();
         asteroidShapes = new HashMap<>();
         ufoShape = new UFOShape();
+        starShape = new StarShape();
         bindActions();
     }
 
@@ -56,6 +55,7 @@ public class SpaceComponent extends AbstractComponent {
 
         spaceshipShape.draw(g2);
         ufoShape.draw(g2);
+        starShape.draw(g2);
         bulletShape.draw(g2);
         drawAsteroids(g2);
     }

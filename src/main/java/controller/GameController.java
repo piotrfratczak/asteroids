@@ -11,6 +11,8 @@ public class GameController {
     private static Display display;
 
     private static boolean quiting = false;
+    private static boolean startingGame = false;
+    private static boolean nextModeEnhanced = false;
     private static boolean inGame = false;
 
     public GameController() {
@@ -19,8 +21,18 @@ public class GameController {
     }
 
     public static void startNewGame(boolean enhancedMode) {
+        startingGame = true;
+        nextModeEnhanced = enhancedMode;
+    }
+
+    public static boolean isStartingGame() {
+        return startingGame;
+    }
+
+    public static void executeNewGame() {
+        startingGame = false;
         inGame = true;
-        game.startNewGame(enhancedMode);
+        game.startNewGame(nextModeEnhanced);
         display.game();
     }
 
@@ -63,11 +75,11 @@ public class GameController {
     }
 
     public static double[] getShipXShapeCoords() {
-        return game.getShipXShapeCoords();
+        return Spaceship.getXShapeCoords();
     }
 
     public static double[] getShipYShapeCoords() {
-        return game.getShipYShapeCoords();
+        return Spaceship.getYShapeCoords();
     }
 
     public static double[] getUFOLargeXShapeCoords() {
@@ -84,6 +96,14 @@ public class GameController {
 
     public static double[] getUFOSmallYShapeCoords() {
         return UFO.getSmallYShapeCoords();
+    }
+
+    public static double[] getStarXShapeCoords() {
+        return Star.getXShapeCoords();
+    }
+
+    public static double[] getStarYShapeCoords() {
+        return Star.getYShapeCoords();
     }
 
     public static void startRotatingSpaceshipRight() {
@@ -174,11 +194,27 @@ public class GameController {
         return game.getUFOPositionY();
     }
 
+    public static double getStarPositionX() {
+        return game.getStarPositionX();
+    }
+
+    public static double getStarPositionY() {
+        return game.getStarPositionY();
+    }
+
     public static char getUFOSize() {
         return game.getUFOSize();
     }
 
     public static boolean flyingUFO() {
         return game.flyingUFO();
+    }
+
+    public static boolean twinklingStar() {
+        return game.twinklingStar();
+    }
+
+    public static boolean spaceshipHasShield() {
+        return game.spaceshipHasShield();
     }
 }

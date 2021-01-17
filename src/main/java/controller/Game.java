@@ -10,4 +10,3 @@ public class Game {
 }
 
 // TODO: add guns
-// TODO: add menu

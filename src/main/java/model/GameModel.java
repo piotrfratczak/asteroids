@@ -19,27 +19,29 @@ public class GameModel {
     private final int INITIAL_ASTEROID_COUNT = 4;
     private final double INITAL_UFO_PROBABILITY = 0.0001;
     private final double UFO_PROBABILITY_CHANGE_RATE = 1.01;
+    private final double STAR_PROBABILITY = 0.01;
 
     private int level;
     private int points;
     private int lives;
+    private boolean enhancedMode;
+    private Star star;
     private int asteroidCount;
     private Map<Integer, Asteroid> asteroids;
     private List<Bullet> bullets;
     private List<Bullet> ufoBullets;
     private double ufoProbability;
-    private boolean enhancedMode;
     private UFO ufo;
     private Spaceship spaceship;
 
 
     public GameModel() {}
 
-    public void startNewGame(boolean enhacedMode) {
+    public void startNewGame(boolean enhancedMode) {
         this.lives = LIVES;
         this.level = 1;
         this.points = 0;
-        this.enhancedMode = enhacedMode;
+        this.enhancedMode = enhancedMode;
         this.ufoProbability = INITAL_UFO_PROBABILITY;
         this.asteroidCount = INITIAL_ASTEROID_COUNT;
         this.spaceship = new Spaceship();
@@ -57,19 +59,12 @@ public class GameModel {
         }
     }
 
-    private void generateUFO() {
-        if (ufo == null && Math.random() < ufoProbability) {
-            ufo = new UFO();
-        }
-    }
-
     public boolean isOver() {
         return lives <= 0;
     }
 
     public void update() {
         if (lives <= 0) return;
-        generateUFO();
         if (asteroids.size() == 0) {
             ++level;
             ++asteroidCount;
@@ -83,8 +78,19 @@ public class GameModel {
         collideBulletsAndUFO();
         collideSpaceshipAndUFO();
         collideUfoBulletsAndSpaceship();
-        updateUFOPosition();
+        updateUFO();
         updateSpaceship();
+        updateStar();
+    }
+
+    private void updateStar() {
+        if (star == null) return;
+        star.updatePosition();
+        if (spaceship.collides(star.position, 40)) {
+            spaceship.activateShield();
+            star = null;
+        }
+        else if (!star.isTwinkling()) star = null;
     }
 
     private void updateSpaceship() {
@@ -95,8 +101,13 @@ public class GameModel {
         }
     }
 
-    private void updateUFOPosition() {
-        if (ufo == null) return;
+    private void updateUFO() {
+        if (ufo == null) {
+            if (Math.random() < ufoProbability) {
+                ufo = new UFO();
+            }
+            else return;
+        }
         ufo.updatePosition();
         Bullet nextBullet = ufo.shoot();
         if (nextBullet != null) {
@@ -108,7 +119,10 @@ public class GameModel {
         for (Map.Entry<Integer,Asteroid> entry : asteroids.entrySet()) {
             Asteroid asteroid = entry.getValue();
             if (this.spaceship.collides(asteroid.position, asteroid.getRadius())) {
-                --lives;
+                if (!spaceship.hasShield()) {
+                    --lives;
+                    spaceship.restart();
+                }
                 hitAsteroid(asteroid);
                 break;
             }
@@ -122,6 +136,9 @@ public class GameModel {
                 Asteroid asteroid = entry.getValue();
                 if (asteroid.isHit(bullet.position)) {
                     bullet.destroy();
+                    if (this.enhancedMode && star == null && Math.random() < STAR_PROBABILITY) {
+                        star = new Star(asteroid);
+                    }
                     points += hitAsteroid(asteroid);
                     break;
                 }
@@ -146,7 +163,10 @@ public class GameModel {
     private void collideSpaceshipAndUFO() {
         if (ufo == null) return;
         if (this.spaceship.collides(this.ufo.position, 25)) {
-            --lives;
+            if (!spaceship.hasShield()) {
+                --lives;
+                spaceship.restart();
+            }
             ufo = null;
         }
     }
@@ -168,6 +188,10 @@ public class GameModel {
         for (Bullet bullet : ufoBullets) {
             if (spaceship.collides(bullet.position, 1)) {
                 bullet.destroy();
+                if (!spaceship.hasShield()) {
+                    --lives;
+                    spaceship.restart();
+                }
                 break;
             }
         }
@@ -230,14 +254,6 @@ public class GameModel {
         return level;
     }
 
-    public double[] getShipXShapeCoords() {
-        return spaceship.getXShapeCoords();
-    }
-
-    public double[] getShipYShapeCoords() {
-        return spaceship.getYShapeCoords();
-    }
-
     public double getUFOPositionX() {
         if (ufo != null) {
             return ufo.getX();
@@ -249,6 +265,22 @@ public class GameModel {
     public double getUFOPositionY() {
         if (ufo != null) {
             return ufo.getY();
+        } else {
+            return SPACE_HEIGHT;
+        }
+    }
+
+    public double getStarPositionX() {
+        if (star != null) {
+            return star.getX();
+        } else {
+            return SPACE_WIDTH;
+        }
+    }
+
+    public double getStarPositionY() {
+        if (star != null) {
+            return star.getY();
         } else {
             return SPACE_HEIGHT;
         }
@@ -321,5 +353,13 @@ public class GameModel {
 
     public boolean flyingUFO() {
         return this.ufo != null;
+    }
+
+    public boolean twinklingStar() {
+        return this.star != null;
+    }
+
+    public boolean spaceshipHasShield() {
+        return spaceship.hasShield();
     }
 }

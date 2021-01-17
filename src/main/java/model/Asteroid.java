@@ -23,8 +23,6 @@ public class Asteroid extends FlyingObject {
         generateShape();
     }
 
-    // TODO: add bonus stars
-
     private Asteroid(Asteroid that) {
         this.id = ++count;
         if (that.size == AsteroidSize.LARGE) {
@@ -115,4 +113,3 @@ public class Asteroid extends FlyingObject {
         return size.getValue();
     }
 }
-// TODO: make destroyable interface
