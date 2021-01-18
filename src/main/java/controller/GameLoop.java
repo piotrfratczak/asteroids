@@ -5,7 +5,6 @@ enum GameStatus {
 }
 
 public class GameLoop {
-// TODO: incorporate into GameController
     private Thread gameThread;
     private volatile GameStatus status;
 
@@ -46,8 +45,6 @@ public class GameLoop {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // TODO: better timer
-
         if (GameController.isGameOver() && GameController.isInGame()) {
             try {
                 Thread.sleep(3000);

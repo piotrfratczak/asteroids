@@ -8,5 +8,3 @@ public class Game {
     }
 
 }
-
-// TODO: add guns
