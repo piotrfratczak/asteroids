@@ -16,3 +16,9 @@ And run with:
 ```
 java -jar build/libs/Asteroids-1.0.jar
 ```
+
+### Testing
+In the project root directory:
+```
+./gradlew test
+```
