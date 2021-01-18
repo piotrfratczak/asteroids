@@ -16,7 +16,7 @@ public class GameModel {
     public static final int BOTTOM_BOUND = -500;
 
     private final int LIVES = 3;
-    private final int INITIAL_ASTEROID_COUNT = 4;
+    private final int INITIAL_ASTEROID_COUNT = 3;
     private final double INITAL_UFO_PROBABILITY = 0.0001;
     private final double UFO_PROBABILITY_CHANGE_RATE = 1.01;
     private final double STAR_PROBABILITY = 0.01;
@@ -95,6 +95,7 @@ public class GameModel {
 
     private void updateSpaceship() {
         spaceship.updatePosition();
+        if (enhancedMode && level % 5 == 0 ) spaceship.upgradeGun();
         Bullet nextBullet = spaceship.shoot();
         if (nextBullet != null) {
             bullets.add(nextBullet);

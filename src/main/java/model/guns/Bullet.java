@@ -8,10 +8,10 @@ public class Bullet extends FlyingObject {
 
     private boolean isAlive;
 
-    public Bullet(Vector position, double direction) {
+    public Bullet(Vector position, double direction, double speed) {
         super(position);
         this.velocity = new Vector(direction);
-        this.velocity.multiplyBy(3);
+        this.velocity.multiplyBy(speed);
         this.direction = direction;
 
         this.isAlive = true;

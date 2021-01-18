@@ -5,7 +5,7 @@ enum GameStatus {
 }
 
 public class GameLoop {
-
+// TODO: incorporate into GameController
     private Thread gameThread;
     private volatile GameStatus status;
 
@@ -42,7 +42,7 @@ public class GameLoop {
     private void processInput() {
         if (GameController.isQuitting()) stop();
         try {
-            Thread.sleep(4);
+            Thread.sleep(5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

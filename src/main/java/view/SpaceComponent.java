@@ -112,6 +112,7 @@ public class SpaceComponent extends AbstractComponent {
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "stopShootAction");
 
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK), "teleportAction");
+        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "quitAction");
 
 
         this.getActionMap().put("thrustAction", new AbstractAction() {
@@ -170,6 +171,12 @@ public class SpaceComponent extends AbstractComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GameController.teleportSpaceship();
+            }
+        });
+        this.getActionMap().put("quitAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameController.goToMenu();
             }
         });
     }

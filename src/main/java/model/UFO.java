@@ -1,6 +1,7 @@
 package model;
 
 import model.guns.Bullet;
+import model.guns.UFOGun;
 
 public class UFO extends Ship {
 
@@ -13,12 +14,9 @@ public class UFO extends Ship {
     private static final double[] Y_SHAPE_COORDS_S = {0, 8, 8, 0, 0, -8, -8, -15, -15, -8, -8, 0};
 
     private final double TURNING_PROBABILITY = 0.002;
-    private final int SHOT_RATE = 120;
 
     private final int frameOffset;
     private final UFOSize size;
-    private int shotCounter;
-
 
 
     public UFO() {
@@ -26,7 +24,7 @@ public class UFO extends Ship {
                 (int)(Math.random() * (GameModel.SPACE_HEIGHT - 200) - (GameModel.TOP_BOUND - 100)) );
         this.direction = Math.random() * 2*Math.PI;
         this.size = UFOSize.randomSize();
-        this.shotCounter = 0;
+        this.gun = new UFOGun();
         this.frameOffset = size == UFOSize.SMALL ? FRAME_OFFSET_S : FRAME_OFFSET;
         setVelocity();
     }
@@ -70,15 +68,7 @@ public class UFO extends Ship {
     }
 
     public Bullet shoot() {
-        ++shotCounter;
-        if (shotCounter % SHOT_RATE != 0) {
-            return null;
-        }
-        double direction = Math.random() * 2*Math.PI;
-        Vector position = new Vector(direction);
-        position.multiplyBy(frameOffset);
-        position.add(this.position);
-        return new Bullet(position, direction);
+        return this.gun.shoot(this.position);
     }
 
     public boolean collides(Vector flyingObjectPosition, double flyingObjectRadius) {

@@ -1,6 +1,6 @@
 package model;
 
-import model.guns.Bullet;
+import model.guns.*;
 
 import java.util.Random;
 
@@ -11,7 +11,6 @@ public class Spaceship extends Ship {
     private final double MAX_VELOCITY = 2;
     private final double BOOST = 0.3;
     private final double FRICTION = 0.995;
-    private final int SPACESHIP_FRAME_OFFSET = 30;
     private final int SHIELD_TTL = 4000;
 
     private static final double[] X_SHAPE_COORDS = {0, 25, 0, -25};
@@ -26,10 +25,11 @@ public class Spaceship extends Ship {
 
     public Spaceship() {
         super(0,0);
-        direction = INIT_DIRECTION;
-        isThrusting = false;
-        velocity = new Vector(0,0);
-        shieldTTL = 0;
+        this.direction = INIT_DIRECTION;
+        this.isThrusting = false;
+        this.velocity = new Vector(0,0);
+        this.shieldTTL = 0;
+        this.gun = new BasicGun();
     }
 
     public static double[] getXShapeCoords() {
@@ -46,14 +46,12 @@ public class Spaceship extends Ship {
 
     public void stopShooting() {
         this.isShooting = false;
+        this.gun.restart();
     }
 
     public Bullet shoot() {
         if (isShooting) {
-            Vector position = new Vector(direction);
-            position.multiplyBy(SPACESHIP_FRAME_OFFSET);
-            position.add(this.position);
-            return new Bullet(position, direction);
+            return gun.shoot(position, direction);
         }
         return null;
     }
@@ -86,7 +84,6 @@ public class Spaceship extends Ship {
     public void updatePosition() {
         rotate();
         thrust();
-        shoot();
         super.updatePosition();
         if (shieldTTL > 0) --shieldTTL;
     }
@@ -138,6 +135,13 @@ public class Spaceship extends Ship {
 
     public boolean hasShield() {
         return shieldTTL > 0;
+    }
+
+    public void upgradeGun() {
+        if (this.gun instanceof BasicGun) this.gun = new FastGun();
+        else if (this.gun instanceof FastGun) this.gun = new SerialGun();
+        else if (this.gun instanceof SerialGun) this.gun = new HighFreqGun();
+        else if (this.gun instanceof HighFreqGun) this.gun = new SuperHighFreqGun();
     }
 
 }
